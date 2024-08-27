@@ -1,3 +1,4 @@
+G,Date,,Opp,W/L,Tm,Opp,TeamFG,TeamFGA,TeamFG%,Team3P,Team3PA,Team3P%,TeamFT,TeamFTA,TeamFT%,TeamORB,TeamTRB,TeamAST,TeamSTL,TeamBLK,TeamTOV,TeamPF,OpponentFG,OpponentFGA,OpponentFG%,Opponent3P,Opponent3PA,Opponent3P%,OpponentFT,OpponentFTA,OpponentFT%,OpponentORB,OpponentTRB,OpponentAST,OpponentSTL,OpponentBLK,OpponentTOV,OpponentPF
 1,2023-11-07,,Mount St. Mary's,W,68,53,24,49,0.49,3,16,0.188,17,25,0.68,9,31,6,8,6,15,17,21,59,0.356,2,12,0.167,9,12,0.75,12,30,7,6,3,13,21
 2,2023-11-10,N,Davidson,L,61,64,20,57,0.351,5,23,0.217,16,21,0.762,14,32,13,8,5,13,18,21,49,0.429,8,15,0.533,14,21,0.667,8,31,15,11,3,14,21
 3,2023-11-12,N,UAB,L,63,66,22,57,0.386,6,23,0.261,13,20,0.65,10,33,10,6,3,14,17,22,54,0.407,1,9,0.111,21,23,0.913,7,31,8,10,9,13,17
@@ -31,4 +32,3 @@
 31,2024-03-10,@,Penn State,L,69,85,22,58,0.379,7,27,0.259,18,25,0.72,6,25,11,8,2,8,19,30,62,0.484,6,20,0.3,19,22,0.864,12,43,18,6,3,10,17
 32,2024-03-13,N,Rutgers,W,65,51,22,51,0.431,7,20,0.35,14,19,0.737,7,39,17,8,4,18,19,19,61,0.311,5,21,0.238,8,14,0.571,5,26,11,9,6,11,16
 33,2024-03-14,N,Wisconsin,L,56,87,22,56,0.393,6,15,0.4,6,10,0.6,6,19,10,7,4,11,11,31,60,0.517,16,25,0.64,9,11,0.818,9,35,25,5,2,12,17
-G,Date,,Opp,W/L,Tm,Opp,TeamFG,TeamFGA,TeamFG%,Team3P,Team3PA,Team3P%,TeamFT,TeamFTA,TeamFT%,TeamORB,TeamTRB,TeamAST,TeamSTL,TeamBLK,TeamTOV,TeamPF,OpponentFG,OpponentFGA,OpponentFG%,Opponent3P,Opponent3PA,Opponent3P%,OpponentFT,OpponentFTA,OpponentFT%,OpponentORB,OpponentTRB,OpponentAST,OpponentSTL,OpponentBLK,OpponentTOV,OpponentPF
