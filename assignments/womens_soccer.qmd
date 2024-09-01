@@ -28,24 +28,57 @@ Now, onto the questions using aggregates, which means `group_by` and `summarize`
 1. How many shots in total has Maryland attempted and how many have been on goal? Calculate a percentage of shots on goal.
 
 ```{r}
+library (readr)
+urlfile="https://raw.githubusercontent.com/dwillis/NCAAWomensSoccerData/main/data/ncaa_womens_soccer_matchstats_2024.csv"
+matches_2024 <- read_csv(url(urlfile))
 
+matches_2024 |>
+  group_by(team) |>
+  summarise(
+    shotsongoal = sum(so_g),
+    shots = sum(sh_att),
+    shootingpercentage = (shotsongoal/shots)
+  )
 ```
+ANSWER - Maryland placed just 22 shots on goal out of their 45 total shots through the first five games of the 2024 season, just under 50 percent. This low rate of putting shots on target shows why Maryland is one of the worst scoring teams in the Big Ten this year having scored just six goals in five games.
 
 2. What about the same shot stats from last season's first four games? You'll need to load the matches from 2022 - just change the season in the URL - and filter by date to find the first four games.
 
 ```{r}
+matches_2023 |>
+  group_by(team) |>
+   filter(date %in% c(2023-08-17, 2023-08-20, 2023-08-24, 2023-08-27)) |>
+  summarise(
+    shotsongoal = sum(so_g),
+    shots = sum(sh_att),
+    shootingpercentage = (shotsongoal/shots)
+  )
 
 ```
-
+ANSWER - Maryland's attack was more on target a season ago, but that didn't lead to improved results. Maryland didn't win any of its first four matches even when it placed 57 percent of their shots on frame as Maryland lost once and had three draws. Maryland only scored five goals in those first four games, which shows the forwards didn't do a good job of beating the goalie, just putting their shots on target.
 
 3. What about draws - Maryland started 2022 with 4 ties. Have any other teams had as many this season?
 
 ```{r}
+matches_2024 |>
+  group_by(team, outcome) |>
+  summarise(
+    total = n()
+  ) |>
+  arrange(desc(outcome))
 ```
-
+ANSWER - Maryland drew two of its first five games in 2024. Texas A&M Corpus Christi, Abilene Christian, App State, Arizona State, BYU, Birmingham, Boston, Cal Poly, Campbell, Coastal Carolina, Drake, East Carolina, FDU, FAU, Florida, George Mason, Georgia, Grambling, Hofstra, Howard, Iona, Iowa, JMU, Kansas City, Kansas, Louisiana, LA Tech, Louisville, Maine, Monmouth, North Dakota, North Florida, Northeastern, Northern Arizona, Omaha, SFA, SIUE, Sacramento St., SLU, Sam Houston St., San Diego, SJSU, Southern Illinois, Tarleton St., Tulsa, UC Santa Barbara, UCF, Incarnate Word, UT Martin, Utah Tech, Vermont, Wagner, Washington, Weber St., and Youngston St. all have two or more draws so far in 2024. Multiple teams have three draws, the most amount by any team.
 
 4. How many total corner kicks has Maryland had so far and how many have its opponents have? Calculate the difference between the two totals for every team.
 
 ```{r}
+matches_2024 |>
+  group_by(team) |>
+  summarise(
+    corners = sum(corners),
+    defensive_corners = sum(defensive_corners),
+    corner_difference = (corners-defensive_corners)
+  )
 ```
+ANSWER - Maryland has defended five more corners than they have taken so far this year. This shows that Maryland doesn't get into advanced attacking position often during matches, and that they its defense is under constant pressure that its conceded 23 corners in five games. Or it could mean that Maryland's goalie often makes saves but doesn't catch the ball and instead parries it away from goal and out of bounds.
 
