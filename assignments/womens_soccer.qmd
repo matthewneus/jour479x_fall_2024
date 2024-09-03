@@ -82,3 +82,27 @@ matches_2024 |>
 ```
 ANSWER - Maryland has defended five more corners than they have taken so far this year. This shows that Maryland doesn't get into advanced attacking position often during matches, and that they its defense is under constant pressure that its conceded 23 corners in five games. Or it could mean that Maryland's goalie often makes saves but doesn't catch the ball and instead parries it away from goal and out of bounds.
 
+```{r}
+matches_2024 <- matches_2024 |>
+  mutate(corner_ratio = corners/defensive_corners)
+
+matches_2024 |>
+  filter(corner_ratio >= 4.0) |>
+  group_by(outcome) |>
+    summarise(count = n())
+```
+The first line of code adds the corner_ratio to the spreadsheet by linking it to matches_2024.
+
+
+
+```{r}
+matches_2024 |>
+  group_by(team) |>
+  summarise(
+    shotsongoal = sum(so_g),
+    shots = sum(sh_att),
+    shootingpercentage = (shotsongoal/shots)
+  ) |>
+  arrange(desc(shootingpercentage))
+```
+
