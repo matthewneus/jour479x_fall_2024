@@ -1,0 +1,28 @@
+```{r}
+```
+
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+matches_2023 <- read_csv("https://raw.githubusercontent.com/dwillis/NCAAWomensSoccerData/main/data/ncaa_womens_soccer_matchstats_2023.csv")
+```
+
+```{r}
+matches_2023 |>
+  group_by(team) |>
+  summarise(
+    sog = sum(so_g),
+    shattempts = sum(sh_att),
+    goals = sum(goals)
+  )|>
+  mutate(SoGPct = (sog/shattempts)*100) |>
+  mutate(goalpershots = (goals/shattempts)) |>
+  arrange(desc(goalpershots))
+```
+
+Despite teams placing most of their total shots on goal, this doesn't lead to those same teams generating a lot of scoring. As Prairie View had the highest shots on goal percentage at 70 percent, they only scored 11 times.
+
+The best way to judge an attack would be to look at its goals scored per shots instead of how many shots on goal a team has accumulated. Chicago State makes the most of its total shot attempts, scoring 21 times on 89 shots. This shows which teams are more clinical with their goal-scoring opportunities.
