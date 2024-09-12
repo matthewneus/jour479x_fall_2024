@@ -106,3 +106,36 @@ matches_2024 |>
   arrange(desc(shootingpercentage))
 ```
 
+
+
+
+
+
+
+For all NCAA teams
+```{r}
+totalgoals23 <- matches_2023 |> mutate(total_goals = goals + defensive_goals) |> filter(date <= '2023-09-15')
+totalgoals24 <- matches_2024 |> mutate(total_goals = goals + defensive_goals)
+
+result <- t.test(totalgoals23$total_goals, totalgoals24$total_goals, alternative="two.sided", var.equal = TRUE)
+
+print(result)
+
+```
+ANSWER - For all NCAA teams, scoring is slightly increased when taking the entire data set for 2023 and all of the games played so far in 2024. But when basing it on nonconference games, the scoring across the NCAA is almost equal to each other. 
+
+
+
+For Maryland games:
+
+```{r}
+umd_totalgoals23 <- matches_2023 |> filter(team == 'Maryland Terrapins, Terps') |> mutate(total_goals_umd23 = goals + defensive_goals) |> filter(date > '2023-09-10')
+umd_totalgoals24 <- matches_2024 |> filter(team == 'Maryland Terrapins, Terps') |> mutate(total_goals_umd24 = goals + defensive_goals)
+
+result <- t.test(umd_totalgoals23$total_goals_umd23, umd_totalgoals24$total_goals_umd24, alternative="two.sided", var.equal = TRUE)
+
+print(result)
+```
+
+ANSWER - Maryland's total goals is higher in 2024 than 2023 when using every game from last season and every game so far in 2024. But when I filter and base the data on the same number of matches, witch is eight, the scoring in Maryland games was slightly higher last season compared to this year. But with Maryland's 2023 data, they failed to score in conference play. Meaning they gave up almost the same amount of goals in 2023 that they've scored and conceded in 2024. However, a high p-value for this test indicates that the results from the test is not strong.
+
