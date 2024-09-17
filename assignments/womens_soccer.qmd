@@ -163,7 +163,8 @@ summary(fit)
 ```
 
 ```{r}
-net <- lm(differential ~ so_g, data = newcorrelations)
+net <- lm(differential ~ red_cards, data = newcorrelations)
 summary(net)
 ```
 
+-- This data shows that a team's shots on goal does have an impact on a team's differential of goals scored and goals conceded. More shots of goal does lead to more goals scored, which helps a team's differential. The total number of shot attempts does help determine a differential, but factors like how many yellow or red cards a team receives does not effect a team's differential.
