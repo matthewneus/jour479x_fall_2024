@@ -139,3 +139,31 @@ print(result)
 
 ANSWER - Maryland's total goals is higher in 2024 than 2023 when using every game from last season and every game so far in 2024. But when I filter and base the data on the same number of matches, witch is eight, the scoring in Maryland games was slightly higher last season compared to this year. But with Maryland's 2023 data, they failed to score in conference play. Meaning they gave up almost the same amount of goals in 2023 that they've scored and conceded in 2024. However, a high p-value for this test indicates that the results from the test is not strong.
 
+### Women's Soccer Correlations
+
+
+```{r}
+correlations <- read_csv("https://raw.githubusercontent.com/dwillis/NCAAWomensSoccerData/main/data/ncaa_womens_soccer_matchstats_2024.csv")
+```
+
+```{r}
+newcorrelations <- correlations |> 
+  mutate(
+    differential = goals - defensive_goals
+    )
+```
+
+```{r}
+newcorrelations |> summarise(correlation = cor(differential, so_g, method="pearson"))
+```
+
+```{r}
+fit <- lm(differential ~ fouls, data = newcorrelations)
+summary(fit)
+```
+
+```{r}
+net <- lm(differential ~ so_g, data = newcorrelations)
+summary(net)
+```
+
