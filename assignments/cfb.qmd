@@ -1,6 +1,7 @@
 ```{r}
 library(tidyverse)
 library(cfbfastR)
+library(Hmisc)
 ```
 
 
@@ -11,5 +12,70 @@ plays_2023 <- cfbd_pbp_data(2023)
 First-play problems: it appears that teams are inconsistent about how they define the first play. Many use the kickoff as the first play, while some do not.
 
 ```{r}
-plays_2023 |> filter(drive_number == 1, play_number == 1, play_type != 'Kickoff') |> distinct(home, play_type)
+plays_2023 |> filter(home == 'Maryland', drive_number == 1, play_number == 1, play_type == 'Kickoff')
 ```
+
+```{r}
+logs <- read.csv("https://thescoop.org/sports-data-files/footballlogs1123.csv")
+```
+
+```{r}
+logs |> 
+  mutate(PointDifferential = (TeamScore-OpponentScore))
+         
+```
+
+```{r}
+correlations <- logs |>
+  mutate(differential = TeamScore - OpponentScore, totalpen = Penalties + DefPenalties)
+
+correlations |> summarise(correlation = cor(differential, totalpen, method="pearson"))
+
+fit <- lm(differential ~ totalpen, data = correlations)
+summary(fit)
+```
+ANSWER = As the p-value is high, this means that the results are random and not significant. The adjusted R-squared is negative, which means this model has no predictive value when it comes to total penalties and point differential. A high residual standard error of 22.6 also tells us that this regression does not fit this data set, meaning this regression does little to tell us if the total number of penalties can predict the score differential in the game. I would not want to write a story that linked close games based on point differential to the number of penalties committed by both teams, because there isn't strong enough evidence to support that.
+
+```{r}
+correlations <- correlations |> 
+  mutate(differential = TeamScore - OpponentScore, totalpen = Penalties + DefPenalties, combinedturnovers = TotalTurnovers + DefTotalTurnovers, firstdowns = FirstDownTotal + DefFirstDownTotal, teamtotaltd = PassingTD + RushingTD, deftotaltd = DefPassingTD, DefRushingTD)
+
+head(correlations)
+```
+```{r}
+simplecorrelations <- correlations |> select_if(is.numeric) |> select(-Game) |> select(differential, totalpen, TotalTurnovers, firstdowns, DefAvg, OffenseAvg, teamtotaltd, deftotaltd, PassingPct, RushingAvg)
+
+cormatrix <- rcorr(as.matrix(simplecorrelations))
+
+cormatrix$r
+```
+
+
+```{r}
+model1 <- lm(differential ~ teamtotaltd + PassingPct + RushingAvg, data=correlations)
+summary(model1)
+```
+ANSWER - To see what best predicts a point differential, I combined the team's passing and rushing touchdowns, the passing percentage and the rushing average. I feel that if a team has a lot of touchdowns, and gains a lot of yards to set them in scoring position, then that should have a impact on the point differential. Also, if a team does not score a lot of touchdowns and fails to gain a lot of yards, they will not have as many opportunities to score points which will also impact the point differential. This multiple regression had a very low p-value, which means it is statistically significant. The adjusted r-square value is at .5 and the residual standard error is 15.26, which tells us that this multiple regression analysis is useful in telling us that the point differential can be predicted by total touchdowns scored along with passing and rushing touchdowns. I picked these three data points because they all contribute to point scoring in different ways and avoid multicollinearity.
+
+```{r}
+closegames <- correlations |> filter(differential <= 7, differential >= -7)
+```
+
+
+```{r}
+fit <- lm(differential ~ totalpen, data = closegames)
+summary(fit)
+```
+
+
+
+```{r}
+model2 <- lm(differential ~ teamtotaltd + PassingPct + RushingAvg, data=closegames)
+summary(model2)
+```
+
+ANSWER - When changing the data set to have it contain close games, to me that is a game decided by seven points so the differential is between 7 and -7, there is little change in the simple and multiple regression. When comparing the point differential and total penalties in close games, we still get a high p-value and a low advanced r-squared, meaning that the data isn't significant for a story. This tells us that penalties don't lead to close games. In the multiple regression with point differential being predicted by a team's total touchdowns, passing percentage and rushing average, we get similar results to all the games in the set. With a low p-value, and low adjusted r-squared and a low residual standard error of 4.6, it is statistically significant that close games are predicted by a team's total touchdowns, passing percentage and rushing average.
+
+
+
+ANSWER - After completing regressions on point differential and penalties in close games and blowouts, I've learned that there is no real connection between the point differential of a game and the combined penalties committed by both teams. Saying that close games are based on the total amount of penalties committed is not statistically correct. To find what helps predict the point differential, we need to look at a team's total touchdowns, passing yards and rushing average. I chose these points because I feel they help paint the best picture of an offense's success, based on how well they score and how far they move the ball. These stats show what teams were successful or not in scoring points, based on touchdowns and yards gained, and we can use these stats in a story to show what teams perform better than others. I would like to test the point differential against defensive stats like sacks or tackles for loss, because I feel that would help paint a picture as to if better defensive teams impact the differential. Or having special teams data, like successful field goals and punt and kickoff returns, could be helpful to find out which teams perform best on all three sides of the ball.
