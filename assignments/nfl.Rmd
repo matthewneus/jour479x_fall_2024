@@ -1,0 +1,45 @@
+```{r}
+library(tidyverse)
+library(nflfastR)
+```
+
+### Terry McLaurin targets by half
+
+* load the play-by-play data
+
+```{r}
+pbp2022 <- read_rds("https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2022.rds")
+pbp2023 <- read_rds("https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2023.rds")
+pbp2024 <- read_rds("https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2024.rds")
+```
+
+first half plays, wsh possession, pass play, McLaurin target (receiver column), first three games
+
+```{r}
+pbp2022 |>
+  filter(posteam == "WAS", play_type == "pass", game_half == "Half1", week <= 3, receiver == "T.McLaurin") |>
+  summarise(
+    totalyards = air_yards + yards_after_catch
+  )
+```
+
+
+```{r}
+pbp2023 |>
+  filter(posteam == "WAS", play_type == "pass", game_half == "Half1", week <= 3, receiver == "T.McLaurin") |>
+  summarise(
+    totalyards = air_yards + yards_after_catch
+  )
+```
+
+
+```{r}
+pbp2024 |>
+  filter(posteam == "WAS", play_type == "pass", game_half == "Half1", week <= 3, receiver == "T.McLaurin") |>
+  summarise(
+    totalyards = air_yards + yards_after_catch
+  )
+```
+
+ANSWER - The data shows that this season's production in the first half of the first three games by McLaruin is similar in terms of targets in the first half to what he saw in 2022, but he has had a bigger impact so far this year. In 2024, McLaurin only has three catches for only 61 yards. In 2022, he had just one catch for nine yards. In 2023, he hauled in seven passes, which is the most out of the three years, but for only 65 yards. This shows that he's seen less targets in the first half of games in 2024 compared to 2023, but McLaurin is putting up similar yardage despite the lack of targets so far this season during the first half.  
+
