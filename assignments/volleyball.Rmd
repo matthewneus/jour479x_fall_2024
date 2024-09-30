@@ -112,3 +112,46 @@ teamzscore <- teamtotals |>
 teamzscore |> select(team, TotalZscore, kills_zscore, errors_zscore, s_err_zscore, digs_zscore) |>  arrange(desc(TotalZscore))
 ```
 
+
+
+### z-score analysis assignment
+
+```{r}
+matches_2024 <- read.csv("https://raw.githubusercontent.com/dwillis/NCAAWomensVolleyballData/main/data/ncaa_womens_volleyball_matchstats_2023.csv")
+glimpse(matches_2024)
+```
+
+```{r}
+teamtotals_2024 <- matches_2024 |> 
+  group_by(team) |> 
+  summarise(
+    avg_errors = mean(errors),
+    avg_kills = mean(kills),
+    avg_digs = mean(digs),
+    avg_aces = mean(aces),
+    avg_hit_pct = mean(hit_pct),
+    avg_sets = mean(s)
+  )
+```
+ANSWER - I chose to include a team's average offensive stats of kills, digs, aces and hit percentage. I incorporated these stats into the composite z-score because I feel this shows us a good benchmark as to who are the best offensive teams, meaning they score more points than others. I included the average number of errors for each team because successful teams tend to make fewer errors than less successful teams, and including the number of sets each team plays can show which teams are dominant and win in less played sets than other teams.
+
+
+
+```{r}
+teamzscore_2024 <- teamtotals_2024 |>
+  mutate(
+    errorszscore = as.numeric(scale(avg_errors, center = TRUE, scale = TRUE)),
+    killszscore = as.numeric(scale(avg_kills, center = TRUE, scale = TRUE)),
+    digszscore = as.numeric(scale(avg_digs, center = TRUE, scale = TRUE)),
+    aceszscore = as.numeric(scale(avg_aces, center = TRUE, scale = TRUE)),
+    hitpctzscore = as.numeric(scale(avg_hit_pct, center = TRUE, scale = TRUE)),
+    setzscore = as.numeric(scale(avg_sets, center = TRUE, scale = TRUE)),
+    TotalZscore = errorszscore + killszscore + digszscore + aceszscore + hitpctzscore + setzscore
+  ) |> ungroup() |> arrange(desc(TotalZscore))
+```
+
+ANSWER - Based on the statistics I used, the best team in NCAA volleyball in 2024 so far is LIU with a total z-score of 7.6. The best power-4 team is California with a z-score of 4.9, and Maryland ranks as one of the worst teams so far this year with a -3.1 z-score.
+
+A possible story I found from this data set is that the best teams on the z-score scale are some of the best serving teams in the country in terms of aces. Three of the first five team on the z-score scale average over seven aces a match, while the lowest average in college volleyball is Hampton at 2.7. A story could dive into the best serving teams and how they are able to win points quick and efficiently, leading to less errors during matches.
+
+Another story idea I discovered is that errors might not have as big of an impact as I initially thought. St. Peter's, who has the sixth highest z-score, commits an average of over 23 errors per game. Teams like Wisconsin average only 12. So despite committing a plethora of errors, it doesn't seem to effect teams like St. Peters who rank high in the z-score composite ranks.
