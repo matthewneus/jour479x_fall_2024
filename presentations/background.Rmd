@@ -1,0 +1,11 @@
+```{r}
+library(tidyverse)
+```
+
+
+
+```{r}
+msoc_2024 <- read.csv("https://raw.githubusercontent.com/Sports-Roster-Data/mens-soccer/refs/heads/main/combined_rosters_2024.csv")
+```
+
+
