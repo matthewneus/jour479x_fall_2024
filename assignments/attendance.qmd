@@ -61,3 +61,113 @@ big_ten_averages <- big_ten_with_wins |>
   )
 ```
 ANSWER - Northwestern averages the worst attendance in the conference despite winning an average of six games a year, which can be considered a good season because of bowl eligibility. Nebraska averages the fourth-best attendance in the conference while only winning around five games a year, which is less than Northwestern. Is this because Nebraska has a bigger stadium compared to Northwestern, or does Nebraska's history of success drive people to show up to every game regardless of the product on the field?
+
+
+###Using ggplot to make bar charts
+
+```{r}
+top10 <- attendance |>
+  arrange(desc(`2023`)) |> 
+  top_n(10) |> 
+  select(Institution, `2023`)
+```
+
+```{r}
+ggplot() + 
+  geom_bar(
+    data=top10, 
+    aes(x=Institution)
+  )
+```
+
+```{r}
+ggplot() + 
+  geom_bar(
+    data=top10, 
+    aes(x=Institution, weight=`2023`)
+  )
+```
+
+```{r}
+ggplot() + 
+  geom_bar(
+    data=top10, 
+    aes(
+      x=reorder(Institution, `2023`), 
+      weight=`2023`
+      )
+    )
+```
+
+```{r}
+ggplot() + 
+  geom_bar(
+    data=top10, 
+    aes(
+      x=reorder(Institution, -`2023`), 
+      weight=`2023`
+      )
+    )
+```
+
+```{r}
+library(scales)
+```
+
+```{r}
+ggplot() + 
+  geom_bar(
+    data=top10, 
+    aes(
+      x=reorder(Institution, -`2023`), 
+      weight=`2023`
+      )
+    ) + 
+  scale_y_continuous(labels=comma)
+```
+
+```{r}
+ggplot() + 
+  geom_bar(
+    data=top10, 
+    aes(
+      x=reorder(Institution, -`2023`), 
+      weight=`2023`)
+    ) + 
+  scale_y_continuous(labels=comma) + 
+  labs(
+    title="Top 10 Football Programs By Attendance", 
+    x="School", 
+    y="Attendance"
+)
+```
+
+```{r}
+ggplot() + 
+  geom_bar(
+    data=top10, 
+    aes(x=reorder(Institution, -`2023`),
+        weight=`2023`)) + 
+  scale_y_continuous(labels=comma) + 
+  labs(
+    title="Top 10 Football Programs By Attendance", 
+    x="School", 
+    y="Attendance") + 
+  theme_minimal()
+```
+
+```{r}
+ggplot() + 
+  geom_bar(
+    data=top10, 
+    aes(x=reorder(Institution, -`2023`),
+        weight=`2023`)) + 
+  scale_y_continuous(labels=comma) + 
+  labs(
+    title="Top 10 Football Programs By Attendance", 
+    x="School", 
+    y="Attendance") + 
+  theme_minimal() + 
+  coord_flip()
+```
+
