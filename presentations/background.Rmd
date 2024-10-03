@@ -8,4 +8,11 @@ library(tidyverse)
 msoc_2024 <- read.csv("https://raw.githubusercontent.com/Sports-Roster-Data/mens-soccer/refs/heads/main/combined_rosters_2024.csv")
 ```
 
+Main Project --> My main goal for this project is to find out if there is a trend in international players coming the the United States to play collegiate soccer. I want to know if there are certain divisions, conferences or schools that roster more foreign players than others. Are these schools consistent in their international influence, like Marshall appears to have a connection with players from Japan or Maryland has a known pipeline with Vaughan FC in Canada, or is it a random mix of players. From that point, I would love to dig deeper and place players into pools based on position. I think it would be interesting if there are regions of the world that represent more defenders or attackers. For example, Maryland's back four consists of two German players, one player from Norway and a player from Denmark. Are more schools like this, or is Maryland just a coincidence?
 
+###Does this data already exsist? Can you get it?
+- This data does exist (thank you for helping me get it!), and I've loaded what we have into r-studio under "msoc_2024." The set lists roster data for most Division I, II and III school. It gives player names, division of the school, positions, hometowns and former school, high school or club.
+
+
+###Will you have to improve or augment that data in order to answer you question. If so, how?
+-
