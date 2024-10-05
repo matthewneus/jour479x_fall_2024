@@ -1,0 +1,24 @@
+```{r}
+library(tidyverse)
+```
+
+```{r}
+msoc2024 <- read.csv("https://raw.githubusercontent.com/Sports-Roster-Data/mens-soccer/refs/heads/main/combined_rosters_2024.csv")
+```
+
+Main Project --> My main goal for this project is to find out if there is a trend in international players coming the the United States to play collegiate soccer. I want to know if there are certain divisions, conferences or schools that roster more foreign players than others. Are these schools consistent in their international influence, like Marshall appears to have a connection with players from Japan or Maryland has a known pipeline with Vaughan FC in Canada, or is it a random mix of players. From that point, I would love to dig deeper and place players into pools based on position. I think it would be interesting if there are regions of the world that represent more defenders or attackers. For example, Maryland's back four consists of two German players, one player from Norway and a player from Denmark. Are more schools like this, or is Maryland just a coincidence?
+
+###Does this data already exsist? Can you get it?
+- This data does exist (thank you for helping me get it!), and I've loaded what we have into r-studio under "msoc2024." The set lists roster data for most Division I, II and III school. It gives player names, division of the school, positions, hometowns and former school, high school or club.
+
+
+###Will you have to improve or augment that data in order to answer you question. If so, how?
+- After looking through the data, one thing I would try to do to clean up this data is make separate data sets for each division. I feel splitting up the data into smaller sets will help make this process easier and help me see if a certain division in NCAA has more international players than other. 
+
+- One thing I want to try in an attempt to improve this data is seeing if I can separate each athlete's hometowns, so one column is the city they are from and the other is the state or country where they are from. This will help me easily know if a player is from another country or not.
+
+- Another thing I will need to improve with this data is working with the high schools and previous schools. Some schools list a player's high school as a previous school, and some list a player's club team as a previous school. I was thinking of making columns for each players high school, previous school if they transferred, and a club. Some players only play in high school, while others only play at a club before going to college. Having these distinct columns will help me make the data easier to read and sort through when the time comes.
+
+
+###Are there other examples of this kind of work (specific or general)?
+- I found a study in 2018 from a student at Akron that took Division I men's soccer roster data and examined if international players led to team's being more successful (https://www.uakron.edu/economics/academics/senior-projects/2020/Cordeiro-M-SeniorProject2020.pdf). The study found that 1,501 players out of 4,874 were international athletes. 
