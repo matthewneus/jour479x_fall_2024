@@ -1,5 +1,6 @@
 ```{r}
 library(tidyverse)
+library(postmastr)
 ```
 
 ```{r}
@@ -22,3 +23,36 @@ Main Project --> My main goal for this project is to find out if there is a tren
 
 ###Are there other examples of this kind of work (specific or general)?
 - I found a study in 2018 from a student at Akron that took Division I men's soccer roster data and examined if international players led to team's being more successful (https://www.uakron.edu/economics/academics/senior-projects/2020/Cordeiro-M-SeniorProject2020.pdf). The study found that 1,501 players out of 4,874 were international athletes. 
+
+```{r}
+msoc_div1 <- msoc2024 |>
+  filter(division == 'I')
+```
+
+```{r}
+msoc_div1 <- msoc_div1 |>
+  mutate(hometown_cleaned = str_to_upper(str_replace(hometown, "\\.",""))) %>% 
+  mutate(hometown_cleaned = str_replace(hometown_cleaned,"\\.","")) %>%
+  mutate(hometown_cleaned = str_replace(hometown_cleaned,"/.*","")) %>%
+  mutate(hometown_cleaned = str_replace(hometown_cleaned,"\\.$","")) %>%
+  mutate(hometown_cleaned = str_replace(hometown_cleaned,",",", ")) %>%
+  mutate(hometown_cleaned = str_replace(hometown_cleaned,"-"," ")) %>% 
+  mutate(hometown_cleaned = str_squish(hometown_cleaned))
+
+  states_non_standard <- pm_append(type = "state", input = c("SD.", "MASS", "CALIF", "MICH", "NEB", "IND", "MINN", "ORE", "OHIO", "FLA", "MISS", "TENN", "ARIZ", "KAN", "ALA", "OKLA", "WIS", "ILL", " WASH", "ARK", "COLO", "NEV", "CONN", "WISC", "WVA", "DEL", "WYO", "CALI", "LOUIS", "VIRG", "MONT", "PENN", "TEX", "KANS", "NEBR", "IDA", "COL"), output = c("SD", "MA", "CA", "MI", "NE", "IN", "MN", "OR", "OH", "FL", "MS", "TN", "AZ", "KS", "AL", "OK", "WI", "IL", "WA", "AR", "CO", "NV", "CT", "WI", "WV", "DE", "WY", "CA", "LA", "VA", "MT", "PA", "TX", "KS", "NE", "ID", "CO"), locale = "us")
+
+  dict <- pm_dictionary(type='state', case = c("title", "upper", "lower"), append = states_non_standard)
+
+  msoc_div1 <- msoc_div1 %>% pm_identify(var="hometown_cleaned")
+  
+  parsed <- msoc_div1 %>% 
+  pm_identify(var="hometown_cleaned") %>% 
+  pm_prep(var="hometown_cleaned", type="street") %>% 
+  pm_state_parse(dict)
+
+msoc_div1 <- left_join(msoc_div1, parsed, by="pm.uid")
+
+msoc_div1 <- msoc_div1 %>% separate(hometown, c('hometown', 'homestate'), sep=',', extra='merge')
+
+```
+
