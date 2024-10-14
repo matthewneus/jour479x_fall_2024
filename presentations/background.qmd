@@ -1,6 +1,7 @@
 ```{r}
 library(tidyverse)
 library(postmastr)
+library(rvest)
 ```
 
 ```{r}
@@ -29,6 +30,7 @@ msoc_div1 <- msoc2024 |>
   filter(division == 'I')
 ```
 
+###U.S. Hometown Cleaning
 ```{r}
 msoc_div1 <- msoc_div1 |>
   mutate(hometown_cleaned = str_to_upper(str_replace(hometown, "\\.",""))) %>% 
@@ -53,6 +55,42 @@ msoc_div1 <- msoc_div1 |>
 msoc_div1 <- left_join(msoc_div1, parsed, by="pm.uid")
 
 msoc_div1 <- msoc_div1 %>% separate(hometown, c('hometown', 'homestate'), sep=',', extra='merge')
-
 ```
 
+###Bar Chart for U.S. Players by State
+```{r}
+library(scales)
+
+ggplot(data = subset(msoc_div1, !is.na(pm.state)), aes(x=pm.state)) +
+  geom_bar(
+    data = msoc_div1 ,
+    aes(
+      x=reorder(pm.state, pm.uid),
+      weight = pm.uid
+    )
+  ) +
+  scale_y_continuous(labels = comma) +
+  labs(
+    title = "Division I Soccer Players by U.S. State",
+    x="State",
+    y="Number of Players"
+  ) +
+  coord_flip()
+```
+- I still have to figure out how to clean up the N/A for international players, but it appears that there is a lot of international players on Division I rosters. 
+
+
+
+###International Hometown Cleaning (an attempt)
+```{r}
+
+fifaurl <- "https://inside.fifa.com/fifa-world-ranking/men"
+nations <- fifaurl %>%
+  read_html() %>%
+  html_nodes(xpath = '//*[@id="fifa_ranking_table_wrapper"]/table') %>%
+  html_table()
+
+nations_df <- nations[[1]] %>% filter(Country != "Puerto Rico") # Puerto Rico is a FIBA nation but also part of the USA
+```
+
+- I now need to clean the data for international players. I tried to use the code used for the women's basketball roster data, but I couldn't get it to clean it fully. Instead of taking cities and naming a country, I created a new column that just copied a player's city instead of the country they are from. I also kept getting this error, "Error in nations[[1]] : subscript out of bounds" when I tried cleaning the country data. Once I get the Division I rosters cleaned, I can do the same for what we have for Division II and III. Then I can filter player by country, continent or region in all three divisions to answer my question of how many collegiate soccer players are international.
