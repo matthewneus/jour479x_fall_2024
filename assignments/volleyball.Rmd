@@ -168,3 +168,87 @@ But total errors isn't the biggest stat that dictates how well a team performs, 
 Saint Peters, who averages the third-highest average of total errors of around 23, makes up for its misfortunes by achieving high averages in aces with over five per match, the fifth-best mark in the country. It also boasts a decent attack, notching a high average in kills and a fair average hitting percentage.
 
 How many errors a team commits is useful to see who is wasteful with its opportunities. But, some teams are better at combating their mistakes by being above average in other categories, like aces and kills.
+
+
+###Dumbbell and lollipop charts
+
+```{r}
+library(tidyverse)
+library(ggalt)
+```
+
+```{r}
+logs <- read_csv("https://dwillis.github.io/sports-data-files/ncaa_womens_volleyball_matchstats_2023.csv")
+```
+
+```{r}
+big10 <- c("Nebraska Huskers", "Iowa Hawkeyes", "Minnesota Golden Gophers", "Illinois Fighting Illini", "Northwestern Wildcats", "Wisconsin Badgers", "Indiana Hoosiers", "Purdue Boilermakers", "Ohio St. Buckeyes", "Michigan Wolverines", "Michigan St. Spartans", "Penn St. Nittany Lions", "Rutgers Scarlet Knights", "Maryland Terrapins, Terps")
+
+errors <- logs |>
+  filter(team %in% big10) |> 
+  group_by(team) |> 
+  summarise(
+    total_errors = sum(errors), 
+    opp_errors = sum(defensive_errors))
+```
+
+```{r}
+ggplot() + 
+  geom_dumbbell(
+    data=errors, 
+    aes(y=team, x=total_errors, xend=opp_errors)
+  )
+```
+
+```{r}
+ggplot() + 
+  geom_dumbbell(
+    data=errors, 
+    aes(y=team, x=opp_errors, xend=total_errors),
+    size = 1,
+    colour = "grey",
+    colour_x = "red",
+    colour_xend = "green") +
+  theme_minimal()
+```
+
+```{r}
+ggplot() + 
+  geom_dumbbell(
+    data=errors, 
+    aes(y=reorder(team, opp_errors), x=opp_errors, xend=total_errors),
+    linewidth = 1,
+    color = "grey",
+    colour_x = "green",
+    colour_xend = "red") + 
+  theme_minimal()
+```
+
+```{r}
+ggplot() + 
+  geom_lollipop(
+    data=errors, 
+    aes(y=team, x=opp_errors), 
+    horizontal = TRUE
+    )
+```
+
+```{r}
+md <- errors |> filter(team == "Maryland Terrapins, Terps")
+
+ggplot() + 
+  geom_lollipop(
+    data=errors, 
+    aes(y=reorder(team, opp_errors), x=opp_errors), 
+    horizontal = TRUE
+    ) + 
+  geom_lollipop(
+    data=md,
+    aes(y=team, x=opp_errors),
+    horizontal = TRUE,
+    color = "red"
+  ) + 
+  theme_minimal() + 
+  labs(title = "Maryland middle of the pack among Big Ten teams", y="team")
+```
+
