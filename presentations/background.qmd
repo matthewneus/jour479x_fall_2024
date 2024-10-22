@@ -238,15 +238,58 @@ msoc_div1 <- msoc_div1 %>%
     pm.address == 'ZAMBIA' ~ 'ZAMBIA',
     pm.address == 'GUATEMALA CITY GUATEMALA' ~ 'GUATEMALA',
     pm.address == 'DOUGLAS BRITISH ISLES' ~ 'ISLE OF MAN',
-    
+    temp == 'CANADA' ~ 'CANADA',
+    temp %in% c('TRINIDAD & TOBAGO', 'TRINIDAD AND TOBAGO') ~ 'TINIDAD AND TOBAGO',
+    temp == 'ISRAEL' ~ 'ISRAEL',
+    temp %in% c('BOSNIA AND HERZEGOVINA', 'AND HERZEGOVINA') ~ 'BOSNIA AND HERZEGOVINA',
+    temp == 'TURKS & CAICOS' ~ 'TURKS & CAICOS',
+    name %in% c('Ethan Kang', 'Alexander Henderson') ~ 'CANADA',
+    name %in% c('Tobias  Wangerud', 'Kevin Ogudugu', 'Thomas Vold') ~ 'NORWAY',
+    name == 'Davide  Romeo' ~ 'ITALY',
+    name %in% c('Mathias Hille', 'Jackson Flier', 'Christoph Schurz', 'Isaiah Thomas', 'Henrik Weiper', 'Tobias Jahn') ~ 'GERMANY',
+    name == 'Fraser Brown' ~ 'NEW ZEALAND',
+    name %in% c('Brady Elmblad', 'Matty Gardner', 'Sebastian Montoulieu', 'Connor Lawlor', 'Gus Mendieta', 'Griffin Polinsky', 'Ethan Leary', 'Andrew Wilbert', 'Richard Conces', 'Kade Tepe', 'Neil Devnani', 'Jackson Flier', 'Ethan Franco', 'Alec Kenison', 'Harry Sankey', 'Jaden Prado', 'Jet Ulven', 'Sebastian Restrepo', 'Fabrizio Cubeddu', 'Tomas Sciarra', 'Colby Hegarty', 'Aidan Ahmad', 'Alex Robb', 'Ryan Savoie', 'Marco Brougher', 'Kevin Carmichael', 'Giancarlo Mota', 'Kai Djerbaka', 'Jack Bowers', 'Justin Knighton', 'Allan Juarez', 'Rohan McEligot', 'Kieran Bracken Serra', 'Arik Duncan', 'Wisdom Onuoma', 'Griffin Gustafson', 'Adrian Guzman', 'Eli Wachs', 'Kevin Rodriguez', 'Brendan Bell', 'Alfredo Ortiz', 'Nik Laredo', 'Owen Bizzaro', 'Cameron Robie', 'Connor Lambe', 'Malcolm Zalayet', 'Wyatt Meyer', 'Santiago Hopkins', 'Israel Cortez', 'Matthew McGrew', 'Beau Morrison', 'Arseni Metelitsa', 'Adrian Jacobs', 'Federico Barbieri', 'Michael Luckhurst', 'Noe Aubanel', 'Zack Andoh', 'Thomas Grimes', 'Iyke Dafe', 'Tanner Barry', 'Harri Sprofera', 'Taha Kina', 'Scott Gustafson', 'Lorenzo Amaral', 'Jack Cloherty', 'Carlo Brown', 'Charlie Adams', 'Jamin Gogo Peters', 'Keegan Walpole', 'Mike Balleani', 'Langdon Gryglas', 'Shayne Thompson', 'Gavin Tabije', 'Zion Wharton', 'Dylan Ellis', 'Adolfo Diaz', 'Timi Browne', 'Heechan Han', 'Diego Elizalde', 'Kyle Gee', 'Greyson Mitchell', 'Andre Romo', 'Levi Pillar', 'Carter Smith', 'Cal Walsh', 'Stefano DAgostini', 'David Blanton', 'Nicholas  Bianchi', 'Josh Mason', 'Alec Laible', 'Morris Matthews', 'Blair Camargo', 'Michael Guiry', 'Kasem Minzey', 'Justin Davidyock', 'Ryan Behrmann', 'Kai Thomas', 'Ronald Zhai', 'Miles Hadley', 'Jack Kryger', 'Curtis Boozer', 'Liam Tucker', 'Andrew Kim') ~ 'USA',
+    name == 'Gaku Nishimura' ~ 'JAPAN',
+    name == 'Nonso Adimabua' ~ 'NIGERIA',
+    name == 'Joe Chalwin' ~ 'ENGLAND',
+    name == 'Mads Stistrup Petersen' ~ 'DENMARK',
+    name %in% c('Yousef Alsaidi', 'Andrew Hummell', 'Teagan Vail', 'Declan Vail', 'Jackson Wall', 'Neythan Yaucan') ~ 'TEAM IMPACT',
+    name == 'Yoann Araujo' ~ 'FRANCE',
     TRUE ~ country
   ))
 
 ```
 
+```{r}
+msoc_div1 <- msoc_div1 |>
+  mutate(country = case_when(
+    temp == 'CANADA' ~ 'CANADA',
+    temp %in% c('TRINIDAD & TOBAGO', 'TRINIDAD AND TOBAGO') ~ 'TINIDAD AND TOBAGO',
+    temp == 'ISRAEL' ~ 'ISRAEL',
+    temp %in% c('BOSNIA AND HERZEGOVINA', 'AND HERZEGOVINA') ~ 'BOSNIA AND HERZEGOVINA',
+    temp == 'TURKS & CAICOS' ~ 'TURKS & CAICOS',
+    TRUE ~ country
+  ))
+```
 
 ```{r}
-europe <- c("ENGLAND", "DENMARK", "NORWAY", "FRANCE", "ITALY", "SPAIN", "SCOTLAND", "IRELAND", "NORTHERN IRELAND", "BULGARIA", "HUNGARY", "SWEDEN", "ESTONIA", "POLAND", "FINLAND", "PORTUGAL", "AUSTRIA", "ICELAND", "NETHERLANDS", "ALBANIA", "CYPRUS", "CROATIA", "BELGIUM", "ESTONIA", "UKRAINE", "SLOVENIA", "SLOVAKIA", "RUSSIA", "HUNGARY", "SERBIA", "GREECE", "WALES", "CROATIA", "ROMANIA", "SWITZERLAND", "LUXEMBOURG", "GIBRALTAR", "NORTH MACEDONIA", "THE CZECH REPUBLIC", "KOSOVO")
+msoc_div1 <- msoc_div1 |>
+  mutate(country = case_when(
+    name %in% c('Ethan Kang', 'Alexander Henderson') ~ 'CANADA',
+    name %in% c('Tobias  Wangerud', 'Kevin Ogudugu', 'Thomas Vold') ~ 'NORWAY',
+    name == 'Davide  Romeo' ~ 'ITALY',
+    name %in% c('Mathias Hille', 'Jackson Flier', 'Christoph Schurz', 'Isaiah Thomas') ~ 'GERMANY',
+    name == 'Fraser Brown' ~ 'NEW ZEALAND',
+    name %in% c('Brady Elmblad', 'Matty Gardner', 'Sebastian Montoulieu', 'Connor Lawlor', 'Gus Mendieta', 'Griffin Polinsky', 'Ethan Leary', 'Andrew Wilbert', 'Richard Conces', 'Kade Tepe', 'Neil Devnani', 'Jackson Flier', 'Ethan Franco', 'Alec Kenison', 'Harry Sankey', 'Jaden Prado', 'Jet Ulven', 'Sebastian Restrepo', 'Fabrizio Cubeddu', 'Tomas Sciarra', 'Colby Hegarty', 'Aidan Ahmad', 'Alex Robb', 'Ryan Savoie', 'Marco Brougher', 'Kevin Carmichael', 'Giancarlo Mota', 'Kai Djerbaka', 'Jack Bowers', 'Justin Knighton', 'Allan Juarez', 'Rohan McEligot', 'Kieran Bracken Serra', 'Arik Duncan', 'Wisdom Onuoma', 'Griffin Gustafson', 'Adrian Guzman', 'Eli Wachs', 'Kevin Rodriguez', 'Brendan Bell', 'Alfredo Ortiz', 'Nik Laredo', 'Owen Bizzaro', 'Cameron Robie', 'Connor Lambe', 'Malcolm Zalayet', 'Wyatt Meyer', 'Santiago Hopkins', 'Israel Cortez', 'Matthew McGrew', 'Beau Morrison', 'Arseni Metelitsa', 'Adrian Jacobs', 'Federico Barbieri', 'Michael Luckhurst', 'Noe Aubanel', 'Zack Andoh', 'Thomas Grimes') ~ 'USA',
+    name == 'Gaku Nishimura' ~ 'JAPAN',
+    name == 'Nonso Adimabua' ~ 'NIGERIA',
+    name == 'Joe Chalwin' ~ 'ENGLAND',
+  ))
+```
+
+
+```{r}
+europe <- c("ENGLAND", "DENMARK", "NORWAY", "FRANCE", "ITALY", "SPAIN", "SCOTLAND", "IRELAND", "NORTHERN IRELAND", "BULGARIA", "HUNGARY", "SWEDEN", "ESTONIA", "POLAND", "FINLAND", "PORTUGAL", "AUSTRIA", "ICELAND", "NETHERLANDS", "ALBANIA", "CYPRUS", "CROATIA", "BELGIUM", "ESTONIA", "UKRAINE", "SLOVENIA", "SLOVAKIA", "RUSSIA", "HUNGARY", "SERBIA", "GREECE", "WALES", "CROATIA", "ROMANIA", "SWITZERLAND", "LUXEMBOURG", "GIBRALTAR", "NORTH MACEDONIA", "THE CZECH REPUBLIC", "KOSOVO", "BOSNIA AND HERZEGOVINA")
 
 msoc_div1 |>
   filter(country %in% europe) |>
@@ -257,7 +300,7 @@ msoc_div1 |>
 ```
 
 
---1045 European college soccer players at D1 level--
+--1048 European college soccer players at D1 level--
 
 ```{r}
 africa <- c("GHANA", "MOROCCO", "CAMEROON", "LESOTHO", "SIERRA LEONE", "DR CONGO", "GAMBIA", "KENYA", "TOGO", "UGANDA", "SOUTH AFRICA", "SENEGAL", "LIBERIA", "NIGERIA", "MOZAMBIQUE", "MONGOLIA", "ZIMBABWE", "ZAMBIA", "SOUTH SUDAN", "IVORY COAST", "ETHIOPIA", "EGYPT", "LIBYA", "CAPE VERDE", "BOTSWANA", "LITHUANIA", "TANZANIA", "BURKINA FASO")
