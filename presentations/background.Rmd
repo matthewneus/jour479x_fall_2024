@@ -220,7 +220,7 @@ msoc_div1 <- msoc_div1 |>
     country %in% c('AUSTRALIA', 'NEW ZEALAND') ~ 'Oceania',
   ))
 ```
-North America is the most well-represented continent, being home to 4,737 players. Europe houses 1,244 players, while South America only has 140 players. I thought South America would have a larger pool of players, considering countries like Argentina and Brazil, but Europe far supasses South America.
+North America is the most well-represented continent, being home to 4,737 players. Europe houses 1,244 players, while South America only has 140 players. I thought South America would have a larger pool of players, considering countries like Argentina and Brazil, but Europe far surpasses South America.
 
 To show how many players represent each continent, I made a bar chart to display each continent with its number of players. Six athletes on Division I rosters were listed as "Team Impact" players, so I omitted them from the data.
 ```{r}
