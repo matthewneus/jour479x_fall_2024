@@ -259,7 +259,7 @@ msoc_div1_cont |> gt() |>
     PctOfPlayers = "Percentage of Players"
   ) |>
   tab_header(
-    title = "How Division I Men's Soccer Rosters are Constructed by Continent",
+    title = "Over 90 Percent of Division I Soccer Rosters Are Players from North American and Europe",
     subtitle = "North America, with the United States, leads the way. Players from Europe make up almost a fifth of Division I rosters"
   ) |> tab_style(
     style = cell_text(color = "black", weight = "bold", align = "center"),
