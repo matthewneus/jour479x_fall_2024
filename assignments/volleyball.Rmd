@@ -251,4 +251,3 @@ ggplot() +
   theme_minimal() + 
   labs(title = "Maryland middle of the pack among Big Ten teams", y="team")
 ```
-

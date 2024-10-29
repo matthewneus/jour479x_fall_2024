@@ -67,7 +67,7 @@ msoc_div1 <- msoc_div1 |>
     pm.address == 'INDIANAPOLIS' ~ 'IN',
     pm.address %in% c('ORLANDO', 'WEST PALM BEACH FLO') ~ 'FL',
     pm.address %in% c('WINCHESTER VIR', 'ARLINGTON VIR', 'BROAD RUN VIR', 'RICHMOND VIR') ~ 'VA',
-    pm.address == "'KAPOLEI HAWAI'I'" ~ 'HI',
+    pm.address %in% c("'KAPOLEI HAWAI'I'", "'KAILUA KONA HAWAI'I'", "'HONOLULU HAWAI'I'", "'MAUI HAWAI‘I'", "'HILO HAWAI'I'") ~ 'HI',
     pm.address == 'CINCINNATI' ~ 'OH',
     pm.address == 'PORTLAND OREG' ~ 'OR',
     pm.address == 'LAS VEGAS' ~ 'NV',
@@ -83,32 +83,6 @@ msoc_div1 <- msoc_div1 |>
 -- PORT OF SPAIN, TRINADAD AND TOBAGO --
 
 
-
-
-
-
-
-###Bar Chart for U.S. Players by State
-```{r}
-library(scales)
-
-ggplot(data = subset(msoc_div1, !is.na(pm.state)), aes(x=pm.state)) +
-  geom_bar(
-    data = msoc_div1 ,
-    aes(
-      x=reorder(pm.state, pm.uid),
-      weight = pm.uid
-    )
-  ) +
-  scale_y_continuous(labels = comma) +
-  labs(
-    title = "Division I Soccer Players by U.S. State",
-    x="State",
-    y="Number of Players"
-  ) +
-  coord_flip()
-```
-- I still have to figure out how to clean up the N/A for international players, but it appears that there is a lot of international players on Division I rosters. 
 
 
 
@@ -128,9 +102,10 @@ msoc_div1 <- msoc_div1 %>% mutate(temp = sapply(strsplit(msoc_div1$hometown_clea
 
 msoc_div1 <- msoc_div1 %>% 
   mutate(country = case_when(
+      hometown_cleaned == 'WORCESTER, PA' ~ 'USA',
     pm.address %in% c('AABENRAA DENMARK', 'COPENHAGEN DENMARK', 'HILLEROD DENMARK', 'SILKEBORG DENMARK', 'ROSKILDE DENMARK', 'HELLERUP DENMARK', 'ESBJERG DENMARK', 'RANDERS DENMARK', 'HØJE TAASTUP DENMARK', 'ODENSE DENMARK', 'AARHUS DENMARK', 'SOENDERBORG DENMARK', 'NYBORG DENMARK', 'VIBORG DENMARK', 'LYNGS DENMARK', 'SLAGELSE DENMARK', 'RUNGSTED KYST DENMARK', 'AALBORG DENMARK', 'SKOVLUNDE DENMARK', 'SVENDBORG DENMARK', 'TAASTRUP DENMARK', 'GENTOFTE DENMARK', 'VALLENSBAEK DENMARK', 'KALUNDBORG DENMARK', 'HERNING DENMARK', 'HILLERØD DENMARK', 'HORSENS DENMARK', 'GREVE DENMARK', 'FARUM DENMARK', 'VILDBJERG DENMARK', 'HELSINGØR DENMARK', 'BRØNDBY DENMARK', 'GLOSTRUP DENMARK', 'NÆSTVED DENMARK', 'ESPERGÆRDE DENMARK', 'GILLELEJE DENMARK', 'SOLROD STRAND DENMARK') ~ 'DENMARK',
     pm.address %in% c('AALESUND NORWAY', 'ASKER NORWAY', 'VESTBY NORWAY', 'STAVANGER NORWAY', 'MELHUS NORWAY', 'BERGEN NORWAY', 'OLSO NORWAY', 'BRYNE NORWAY', 'BEGBY NORWAY', 'SANDNES NORWAY', 'BAERUM NORWAY', 'DRAMMEN NORWAY', 'EGERSUND NORWAY', 'SOTRA NORWAY', 'KLEPP NORWAY', 'FRAM NORWAY', 'TAU NORWAY', 'FREDRIKSTAD NORWAY', 'LOVENSTAD NORWAY', 'TROMSDALEN NORWAY', 'FINNSNES NORWAY', 'HITRA NORWAY', 'TRANBY NORWAY', 'JESSHEIM NORWAY', 'MOSS NORWAY', 'SKIEN NORWAY', 'NESODDTANGEN NORWAY', 'TRONDHEIM NORWAY', 'BODO NORWAY', 'RENNESØY NORWAY', 'BÆRUM NORWAY', 'PORSGRUNN TELEMARK NORWAY', 'SOGNDAL NORWAY', 'HAUGESUND NORWAY', 'LILLEHAMMER NORWAY', 'RANDABERG NORWAY', 'HOLMESTRAND NORWAY', 'HUSNES NORWAY', 'ORKANGER NORWAY', 'ALESUND NORWAY', 'BODØ NORWAY', 'ELVERUM NORWAY', 'LILLESTRØM NORWAY', 'NORWAY', 'ROSKILDE NORWAY', 'SANDEFJORD NORWAY', 'HVALER NORWAY', 'HASLUM NORWAY', 'VIKESA NORWAY', 'BILLINGSTAD NORWAY', 'LEKNES NORWAY', 'OSLO NORWAY', 'BRYNE NOR') ~ 'NORWAY',
-    pm.address %in% c('ACCRA GHANA', 'ACCRA KASOA GHANA', 'KUMASI GHANA', 'SUNYANI GHANA', 'CAPE COAST GHANA', 'MADINA GHANA', 'PORTOR GHANA', 'AWUTU BEREKU GHANA', 'BIBIANI GHANA', 'SEKONDI TAKORADI GHANA', 'SAMPA GHANA', 'TECHIMAN GHANA', 'GREATER ACCRA GHANA', 'HO GHANA', 'ALAJO GHANA', 'TAMALE GHANA', 'BOLGATANGA GHANA', 'TEMA GHANA') ~ 'GHANA',
+    pm.address %in% c('ACCRA GHANA', 'ACCRA KASOA GHANA', 'KUMASI GHANA', 'SUNYANI GHANA', 'CAPE COAST GHANA', 'MADINA GHANA', 'PORTOR GHANA', 'AWUTU BEREKU GHANA', 'BIBIANI GHANA', 'SEKONDI TAKORADI GHANA', 'SAMPA GHANA', 'TECHIMAN GHANA', 'GREATER ACCRA GHANA', 'HO GHANA', 'ALAJO GHANA', 'TAMALE GHANA', 'BOLGATANGA GHANA', 'TEMA GHANA', 'SOUTHPORT CT & KUMASI GHANA', 'CARPINTERIA CA & ACCRA GHANA') ~ 'GHANA',
     pm.address == 'ST THOMAS, VIRGIN ISLANDS' ~ 'VIRGIN ISLANDS',
     pm.address %in% c('ALAJUELA COSTA RICA', 'SAN JOSÉ COSTA RICA', 'HEREDIA COSTA RICA', 'ATENAS COSTA RICA', 'TARRAZU SAN JOSE COSTA RICA', 'SAN JOSE COSTA RICA', 'SAN CARLOS COSTA RICA', 'SANTA CRUZ COSTA RICA') ~ 'COSTA RICA',
     pm.address == 'FIER ALBANIA' ~ 'ALBANIA',
@@ -188,7 +163,7 @@ msoc_div1 <- msoc_div1 %>%
     pm.address %in% c('GAUTENG SOUTH AFRICA', 'ROODEPOORT SOUTH AFRICA', 'CAPE TOWN SOUTH AFRICA', 'JOHANNESBURG SOUTH AFRICA', 'PRETORIA SOUTH AFRICA', 'SOUTPAN SOUTH AFRICA', 'CAPETOWN SOUTH AFRICA', 'EAST LONDON SOUTH AFRICA') ~ 'SOUTH AFRICA',
     pm.address == 'SANTO DOMINGO DOMINICAN REPUBLIC' ~ 'DOMINICAN REPUBLIC',
     pm.address %in% c('MONROVIA LIBERIA', 'MONTSERRADO LIBERIA') ~ 'LIBERIA',
-    pm.address %in% c('OGUN NIGERIA', 'ERUWA NIGERIA') ~ 'NIGREIA',
+    pm.address %in% c('OGUN NIGERIA', 'ERUWA NIGERIA') ~ 'NIGERIA',
     pm.address == 'LIMA PERU' ~ 'PERU',
     pm.address == 'MAPUTO MOZAMBIQUE' ~ 'MOZAMBIQUE',
     pm.address %in% c('ODESSA UKRAINE', 'RIVNE UKRAINE', 'KYIV UKRAINE', 'KHARKIV UKRAINE', 'LUHANSK UKRAINE') ~ 'UKRAINE',
@@ -205,7 +180,7 @@ msoc_div1 <- msoc_div1 %>%
     pm.address %in% c('BULAWYO ZIMBABWE', 'HARARE ZIMBABWE') ~ 'ZIMBABWE',
     pm.address == 'CASTRIES SAINT LUCIA' ~ 'SAINT LUCIA',
     pm.address %in% c('BRATISLAVA SLOVAKIA', 'KOSICE SLOVAKIA', 'BANOVCE NAD BEBRAVOU SLOVAKIA') ~ 'SLOVAKIA',
-    pm.address %in% c('HONG KONG', 'BEIJING CHINA') ~ 'CHINA',
+    pm.address %in% c('HONG KONG', 'BEIJING CHINA', 'SAI KUNG HONG KONG') ~ 'CHINA',
     pm.address %in% c('BELFAST NORTHERN IRELAND', 'HOLLYWOOD NORTHERN IRELAND', 'DERRY NORTHERN IRELAND') ~ 'NORTHERN IRELAND',
     pm.address == 'BEIRUT LEBANON' ~ 'LEBANON',
     pm.address == 'LA PAZ BOLIVIA' ~ 'BOLIVIA',
@@ -226,7 +201,7 @@ msoc_div1 <- msoc_div1 %>%
     pm.address == 'CAIRO EGYPT' ~ 'EGYPT',
     pm.address == 'DERNAH LIBYA' ~ 'LIBYA',
     pm.address == 'MONACO' ~ 'MONACO',
-    pm.address == 'ABIDJAN IVORY COAST' ~ 'IVORY COAST',
+    pm.address %in% c('ABIDJAN IVORY COAST', "'ABIDJAN COTE D'IVOIRE'") ~ 'IVORY COAST',
     pm.address == 'PANAMA CITY PANAMA' ~ 'PANAMA',
     pm.address == 'GABORONE BOTSWANA' ~ 'BOTSWANA',
     pm.address == 'PLOIESTI ROMANIA' ~ 'ROMANIA',
@@ -239,107 +214,227 @@ msoc_div1 <- msoc_div1 %>%
     pm.address == 'GUATEMALA CITY GUATEMALA' ~ 'GUATEMALA',
     pm.address == 'DOUGLAS BRITISH ISLES' ~ 'ISLE OF MAN',
     temp == 'CANADA' ~ 'CANADA',
-    temp %in% c('TRINIDAD & TOBAGO', 'TRINIDAD AND TOBAGO') ~ 'TINIDAD AND TOBAGO',
+    temp %in% c('TRINIDAD & TOBAGO', 'TRINIDAD AND TOBAGO') ~ 'TRINIDAD AND TOBAGO',
     temp == 'ISRAEL' ~ 'ISRAEL',
     temp %in% c('BOSNIA AND HERZEGOVINA', 'AND HERZEGOVINA') ~ 'BOSNIA AND HERZEGOVINA',
     temp == 'TURKS & CAICOS' ~ 'TURKS & CAICOS',
     name %in% c('Ethan Kang', 'Alexander Henderson') ~ 'CANADA',
     name %in% c('Tobias  Wangerud', 'Kevin Ogudugu', 'Thomas Vold') ~ 'NORWAY',
     name == 'Davide  Romeo' ~ 'ITALY',
-    name %in% c('Mathias Hille', 'Jackson Flier', 'Christoph Schurz', 'Isaiah Thomas', 'Henrik Weiper', 'Tobias Jahn') ~ 'GERMANY',
+    name %in% c('Mathias Hille', 'Jackson Flier', 'Christoph Schurz', 'Isaiah Thomas', 'Henrik Weiper', 'Tobias Jahn', 'Kevin Thallinger') ~ 'GERMANY',
     name == 'Fraser Brown' ~ 'NEW ZEALAND',
-    name %in% c('Brady Elmblad', 'Matty Gardner', 'Sebastian Montoulieu', 'Connor Lawlor', 'Gus Mendieta', 'Griffin Polinsky', 'Ethan Leary', 'Andrew Wilbert', 'Richard Conces', 'Kade Tepe', 'Neil Devnani', 'Jackson Flier', 'Ethan Franco', 'Alec Kenison', 'Harry Sankey', 'Jaden Prado', 'Jet Ulven', 'Sebastian Restrepo', 'Fabrizio Cubeddu', 'Tomas Sciarra', 'Colby Hegarty', 'Aidan Ahmad', 'Alex Robb', 'Ryan Savoie', 'Marco Brougher', 'Kevin Carmichael', 'Giancarlo Mota', 'Kai Djerbaka', 'Jack Bowers', 'Justin Knighton', 'Allan Juarez', 'Rohan McEligot', 'Kieran Bracken Serra', 'Arik Duncan', 'Wisdom Onuoma', 'Griffin Gustafson', 'Adrian Guzman', 'Eli Wachs', 'Kevin Rodriguez', 'Brendan Bell', 'Alfredo Ortiz', 'Nik Laredo', 'Owen Bizzaro', 'Cameron Robie', 'Connor Lambe', 'Malcolm Zalayet', 'Wyatt Meyer', 'Santiago Hopkins', 'Israel Cortez', 'Matthew McGrew', 'Beau Morrison', 'Arseni Metelitsa', 'Adrian Jacobs', 'Federico Barbieri', 'Michael Luckhurst', 'Noe Aubanel', 'Zack Andoh', 'Thomas Grimes', 'Iyke Dafe', 'Tanner Barry', 'Harri Sprofera', 'Taha Kina', 'Scott Gustafson', 'Lorenzo Amaral', 'Jack Cloherty', 'Carlo Brown', 'Charlie Adams', 'Jamin Gogo Peters', 'Keegan Walpole', 'Mike Balleani', 'Langdon Gryglas', 'Shayne Thompson', 'Gavin Tabije', 'Zion Wharton', 'Dylan Ellis', 'Adolfo Diaz', 'Timi Browne', 'Heechan Han', 'Diego Elizalde', 'Kyle Gee', 'Greyson Mitchell', 'Andre Romo', 'Levi Pillar', 'Carter Smith', 'Cal Walsh', 'Stefano DAgostini', 'David Blanton', 'Nicholas  Bianchi', 'Josh Mason', 'Alec Laible', 'Morris Matthews', 'Blair Camargo', 'Michael Guiry', 'Kasem Minzey', 'Justin Davidyock', 'Ryan Behrmann', 'Kai Thomas', 'Ronald Zhai', 'Miles Hadley', 'Jack Kryger', 'Curtis Boozer', 'Liam Tucker', 'Andrew Kim') ~ 'USA',
+    name %in% c('Brady Elmblad', 'Matty Gardner', 'Sebastian Montoulieu', 'Connor Lawlor', 'Gus Mendieta', 'Griffin Polinsky', 'Ethan Leary', 'Andrew Wilbert', 'Richard Conces', 'Kade Tepe', 'Neil Devnani', 'Jackson Flier', 'Ethan Franco', 'Alec Kenison', 'Harry Sankey', 'Jaden Prado', 'Jet Ulven', 'Sebastian Restrepo', 'Fabrizio Cubeddu', 'Tomas Sciarra', 'Colby Hegarty', 'Aidan Ahmad', 'Alex Robb', 'Ryan Savoie', 'Marco Brougher', 'Kevin Carmichael', 'Giancarlo Mota', 'Kai Djerbaka', 'Jack Bowers', 'Justin Knighton', 'Allan Juarez', 'Rohan McEligot', 'Kieran Bracken Serra', 'Arik Duncan', 'Wisdom Onuoma', 'Griffin Gustafson', 'Adrian Guzman', 'Eli Wachs', 'Kevin Rodriguez', 'Brendan Bell', 'Alfredo Ortiz', 'Nik Laredo', 'Owen Bizzaro', 'Cameron Robie', 'Connor Lambe', 'Malcolm Zalayet', 'Wyatt Meyer', 'Santiago Hopkins', 'Israel Cortez', 'Matthew McGrew', 'Beau Morrison', 'Arseni Metelitsa', 'Adrian Jacobs', 'Federico Barbieri', 'Michael Luckhurst', 'Noe Aubanel', 'Zack Andoh', 'Thomas Grimes', 'Iyke Dafe', 'Tanner Barry', 'Harri Sprofera', 'Taha Kina', 'Scott Gustafson', 'Lorenzo Amaral', 'Jack Cloherty', 'Carlo Brown', 'Charlie Adams', 'Jamin Gogo Peters', 'Keegan Walpole', 'Mike Balleani', 'Langdon Gryglas', 'Shayne Thompson', 'Gavin Tabije', 'Zion Wharton', 'Dylan Ellis', 'Adolfo Diaz', 'Timi Browne', 'Heechan Han', 'Diego Elizalde', 'Kyle Gee', 'Greyson Mitchell', 'Andre Romo', 'Levi Pillar', 'Carter Smith', 'Cal Walsh', 'Stefano DAgostini', 'David Blanton', 'Nicholas  Bianchi', 'Josh Mason', 'Alec Laible', 'Morris Matthews', 'Blair Camargo', 'Michael Guiry', 'Kasem Minzey', 'Justin Davidyock', 'Ryan Behrmann', 'Kai Thomas', 'Ronald Zhai', 'Miles Hadley', 'Jack Kryger', 'Curtis Boozer', 'Liam Tucker', 'Andrew Kim', 'Chase Ashby', 'Isaiah Easley', 'Ian Ngonethong', 'Declan Horio', 'Milan Uncanin', 'Evan Wellerstein', 'Quinn Sellers', 'Elijah Dinkel', 'Dylan Akau', 'Edgar Soto', 'Dylan Janoski', 'Chris Nezianya') ~ 'USA',
     name == 'Gaku Nishimura' ~ 'JAPAN',
     name == 'Nonso Adimabua' ~ 'NIGERIA',
     name == 'Joe Chalwin' ~ 'ENGLAND',
     name == 'Mads Stistrup Petersen' ~ 'DENMARK',
-    name %in% c('Yousef Alsaidi', 'Andrew Hummell', 'Teagan Vail', 'Declan Vail', 'Jackson Wall', 'Neythan Yaucan') ~ 'TEAM IMPACT',
+    name %in% c('Yousef Alsaidi', 'Andrew Hummell', 'Teagan Vail', 'Declan Vail', 'Jackson Wall', 'Neythan Yaucan', 'Yousef Alsaidi') ~ 'TEAM IMPACT',
     name == 'Yoann Araujo' ~ 'FRANCE',
+    name %in% c('KK Baffour', 'Daniel Boateng') ~ 'GHANA',
+    name == 'Abdoul Karim Pare' ~ 'IVORY COAST',
+    name == 'Gijs Hovius' ~ 'NETHERLANDS',
+    name == 'Jose Vilela' ~ 'PUERTO RICO',
+    temp == 'PUERTO RICO' ~ 'PUERTO RICO',
+    name == 'Guilherme Melchiori' ~ 'BRAZIL',
     TRUE ~ country
   ))
 
-```
-
-```{r}
 msoc_div1 <- msoc_div1 |>
-  mutate(country = case_when(
-    temp == 'CANADA' ~ 'CANADA',
-    temp %in% c('TRINIDAD & TOBAGO', 'TRINIDAD AND TOBAGO') ~ 'TINIDAD AND TOBAGO',
-    temp == 'ISRAEL' ~ 'ISRAEL',
-    temp %in% c('BOSNIA AND HERZEGOVINA', 'AND HERZEGOVINA') ~ 'BOSNIA AND HERZEGOVINA',
-    temp == 'TURKS & CAICOS' ~ 'TURKS & CAICOS',
-    TRUE ~ country
+  mutate(Continent = case_when(
+    country %in% c('USA', 'CANADA', 'MEXICO', 'BERMUDA', 'PUERTO RICO', 'COSTA RICA', 'PANAMA', 'BAHAMAS', 'BARBADOS', 'CAYMAN ISLANDS', 'DOMINICAN REPUBLIC', 'EL SALVADOR', 'HAITI', 'GUATEMALA', 'HONDURAS', 'JAMAICA', 'SAINT LUCIA', 'TRINIDAD AND TOBAGO', 'TURKS & CAICOS') ~ 'North America',
+    country %in% c('ARGENTINA', 'BOLIVIA', 'BRAZIL', 'CHILE', 'COLOMBIA', 'ECUADOR', 'PERU', 'PARAGUAY', 'VENEZUELA') ~ 'South America',
+    country %in% c('ALBANIA', 'AUSTRIA', 'BELGIUM', 'BOSNIA AND HERZEGOVINA', 'BULGARIA', 'CROATIA', 'CYPRUs', 'DENMARK', 'ENGLAND', 'ESTONIA', 'FINLAND', 'FRANCE', 'GERMANY', 'GIBRALTAR', 'GREECE', 'HUNGARY', 'ICELAND', 'IRELAND', 'ITALY', 'KOSOVO', 'LUXEMBOURG', 'MONACO', 'NETHERLANDS', 'NORTH MACEDONIA', 'NORTHERN IRELAND', 'NORWAY', 'POLAND', 'PORTUGAL', 'ROMANIA', 'SCOTLAND', 'SERBIA', 'SLOVAKIA', 'SLOVENIA', 'SPAIN', 'SWEDEN', 'SWITZERLAND', 'THE CZECH REPUBLIC', 'UKRAINE', 'WALES', 'ISLE OF MAN', 'LITHUANIA', 'CYPRUS') ~ 'Europe',
+    country %in% c('ZAMBIA', 'ZIMBABWE', 'BOTSWANA', 'BURKINA FASO', 'CAMEROON', 'CAPE VERDE', 'DR CONGO', 'EGYPT', 'ETHIOPIA', 'GAMBIA', 'GHANA', 'IVORY COAST', 'KENYA', 'LESOTHO', 'LIBERIA', 'LIBYA', 'MOROCCO', 'MOZAMBIQUE', 'NIGERIA', 'SENEGAL', 'SIERRA LEONE', 'SOUTH AFRICA', 'SOUTH SUDAN', 'TANZANIA', 'TOGO', 'UGANDA') ~ 'Africa',
+    country %in% c('JAPAN', 'CHINA', 'INDIA', 'ISRAEL', 'IRAQ', 'JORDAN', 'LEBANON', 'MALAYSIA', 'MONGOLIA', 'RUSSIA', 'SINGAPORE', 'SOUTH KOREA', 'TAIWAN', 'TURKEY', 'UNITED ARAB EMIRATES') ~ 'Asia',
+    country %in% c('AUSTRALIA', 'NEW ZEALAND') ~ 'Oceania',
   ))
+
 ```
 
+--NORTH AMERICA CONSISTS OF NORTH AND CENTRAL AMERICAN COUNTRIES--
+--RUSSIA AND TURKEY ARE LISTED IN ASIA BECUASE MORE LAND IS ON THAT CONTINENT--
+--ISLE OF MAN IN EUROPE B/C IT IS A BRITISH TERRITORY--
+--COMBINED AUSTRALIA AND NEW ZEALAND TO OCEANIA--
+-- BELIEVE Guilherme Melchiori IS FROM BRAZIL, ACCORDING TO HIS JUNIOR COLLEGE PROFILE--
+
 ```{r}
-msoc_div1 <- msoc_div1 |>
-  mutate(country = case_when(
-    name %in% c('Ethan Kang', 'Alexander Henderson') ~ 'CANADA',
-    name %in% c('Tobias  Wangerud', 'Kevin Ogudugu', 'Thomas Vold') ~ 'NORWAY',
-    name == 'Davide  Romeo' ~ 'ITALY',
-    name %in% c('Mathias Hille', 'Jackson Flier', 'Christoph Schurz', 'Isaiah Thomas') ~ 'GERMANY',
-    name == 'Fraser Brown' ~ 'NEW ZEALAND',
-    name %in% c('Brady Elmblad', 'Matty Gardner', 'Sebastian Montoulieu', 'Connor Lawlor', 'Gus Mendieta', 'Griffin Polinsky', 'Ethan Leary', 'Andrew Wilbert', 'Richard Conces', 'Kade Tepe', 'Neil Devnani', 'Jackson Flier', 'Ethan Franco', 'Alec Kenison', 'Harry Sankey', 'Jaden Prado', 'Jet Ulven', 'Sebastian Restrepo', 'Fabrizio Cubeddu', 'Tomas Sciarra', 'Colby Hegarty', 'Aidan Ahmad', 'Alex Robb', 'Ryan Savoie', 'Marco Brougher', 'Kevin Carmichael', 'Giancarlo Mota', 'Kai Djerbaka', 'Jack Bowers', 'Justin Knighton', 'Allan Juarez', 'Rohan McEligot', 'Kieran Bracken Serra', 'Arik Duncan', 'Wisdom Onuoma', 'Griffin Gustafson', 'Adrian Guzman', 'Eli Wachs', 'Kevin Rodriguez', 'Brendan Bell', 'Alfredo Ortiz', 'Nik Laredo', 'Owen Bizzaro', 'Cameron Robie', 'Connor Lambe', 'Malcolm Zalayet', 'Wyatt Meyer', 'Santiago Hopkins', 'Israel Cortez', 'Matthew McGrew', 'Beau Morrison', 'Arseni Metelitsa', 'Adrian Jacobs', 'Federico Barbieri', 'Michael Luckhurst', 'Noe Aubanel', 'Zack Andoh', 'Thomas Grimes') ~ 'USA',
-    name == 'Gaku Nishimura' ~ 'JAPAN',
-    name == 'Nonso Adimabua' ~ 'NIGERIA',
-    name == 'Joe Chalwin' ~ 'ENGLAND',
+msoc_div1 |>
+  group_by(Continent) |>
+  summarise(
+    count = n()
+  )
+```
+--4737 players from North America--
+--140 PLAYERS FROM SOUTH AMERICA--
+--1244 PLAYERS FROM EUROPE--
+--139 PLAYERS FROM ASIA--
+--127 PLAYERS FROM AFRICA--
+--59 PLAYERS FROM OCEANIA--
+
+##bar chart to compare contients##
+```{r}
+
+msoc_div1_cont <- msoc_div1 |>
+  group_by(Continent) |>
+  summarise(
+    TotalPlayers = n(),
+    PctOfPlayers = TotalPlayers / 6446
+  ) |>
+  arrange(desc(PctOfPlayers)) |>
+  na.omit()
+```
+--omiting 'team impact'
+
+```{r}
+library(ggplot2)
+library(scales)
+
+ggplot() + 
+  geom_bar(
+    data=msoc_div1_cont, 
+    aes(x=reorder(Continent, TotalPlayers),
+        weight=TotalPlayers)) + 
+  scale_y_continuous(labels=comma) + 
+  labs(
+    title="Division I Soccer Player By Continent", 
+    x="Continent", 
+    y="Total Number of Players") + 
+  theme_minimal() + 
+  coord_flip() +
+  theme_light()
+```
+
+###chart for regions in Europe (NORTH, EAST, SOUTH, WEST --> GO BACK AND MAKE SURE ALL IS RIGHT)
+
+```{r}
+msoc_div1_europe <- msoc_div1 |>
+  filter(Continent == 'Europe') |>
+  mutate(Region = case_when(
+    country %in% c('ALBANIA', 'BOSNIA AND HERZEGOVINA', 'CROATIA', 'GREECE', 'ITALY', 'NORTH MACEDONIA', 'PORTUGAL', 'SERBIA', 'SLOVENIA', 'SPAIN', 'CYPRUS', 'BULGARIA', 'ROMANIA', 'KOSOVO', 'GIBRALTAR') ~ 'Southern Europe',
+    country %in% c('GERMANY', 'POLAND', 'SWITZERLAND', 'AUSTRIA', 'SLOVAKIA', 'HUNGARY', 'THE CZECH REPUBLIC', 'UKRAINE') ~ 'Eastern Europe',
+    country %in% c('NORWAY', 'SWEDEN', 'DENMARK', 'FINLAND', 'ICELAND', 'ENGLAND', 'WALES', 'NORTHERN IRELAND', 'SCOTLAND', 'IRELAND', 'LITHUANIA', 'ESTONIA', 'ISLE OF MAN') ~ 'Northern Europe',
+    country %in% c('AUSTRIA', 'BELGIUM', 'FRANCE', 'LUXEMBOURG', 'MONACO', 'NETHERLANDS') ~ 'Western Europe'
   ))
+
+msoc_div1_europe |>
+  group_by(Region) |>
+  summarise(
+    Total = n()
+  )
+```
+--247 from Eastern Europe--
+--537 from Northern Europe--
+--308 from Southern Europe--
+--152 from Western Europe--
+
+
+```{r}
+library(gt)
+
+msoc_div1_cont |> gt() |> 
+  cols_label(
+    PctOfPlayers = "Percentage of Players"
+  ) |>
+  tab_header(
+    title = "How Division I Men's Soccer Rosters are Constructed by Continent",
+    subtitle = "North America, with the United States, leads the way. Players from Europe make up almost a fifth of Division I rosters"
+  ) |> tab_style(
+    style = cell_text(color = "black", weight = "bold", align = "left"),
+    locations = cells_title("title")
+  ) |> tab_style(
+    style = cell_text(color = "black", align = "left"),
+    locations = cells_title("subtitle")
+  ) |>
+  tab_source_note(
+    source_note = md("**By:** Matthew Neus  |  **Source:** [Men's Soccer Roster Data](https://raw.githubusercontent.com/Sports-Roster-Data/mens-soccer/refs/heads/main/combined_rosters_2024.csv)")
+  ) |>
+    fmt_percent(
+    columns = c(PctOfPlayers),
+    decimals = 1
+  )
+
+
+```
+
+```{r}
+msoc_div1_cont |> 
+  gt() |> 
+  cols_label(
+    PctOfPlayers = "Percentage of Players"
+  ) |>
+  tab_header(
+    title = "How Division I Men's Soccer Rosters are Constructed by Continent",
+    subtitle = "North America, with the United States, leads the way. Players from Europe make up almost a fifth of Division I rosters"
+  ) |>  
+  tab_source_note(
+    source_note = md("**By:** Matthew Neus  |  **Source:** [Men's Soccer Roster Data](https://raw.githubusercontent.com/Sports-Roster-Data/mens-soccer/refs/heads/main/combined_rosters_2024.csv)")
+  ) |> 
+  tab_style(
+    style = cell_text(color = "black", weight = "bold", align = "center"),
+    locations = cells_title("title")
+  ) |> 
+  tab_style(
+    style = cell_text(color = "black", align = "center"),
+    locations = cells_title("subtitle")
+  ) |>
+  tab_style(
+     locations = cells_column_labels(columns = everything()),
+     style = list(
+       cell_borders(sides = "bottom", weight = px(3)),
+       cell_text(weight = "bold", size=12)
+     )
+   )
+```
+
+```{r}
+msoc_div1_europe_gt <- msoc_div1_europe |>
+  group_by(Region) |>
+  summarise(
+    TotalPlayers = n(),
+    PctOfPlayers = TotalPlayers / 1244
+  ) |>
+  arrange(desc(PctOfPlayers))
+```
+
+```{r}
+msoc_div1_europe_gt |> gt() |> 
+  cols_label(
+    PctOfPlayers = "Percentage of Players"
+  ) |>
+  tab_header(
+    title = "Northern Europe, Including the United Kingdom, Sends the Most Players to Division I Colleges",
+    subtitle = "The United Kingdon, which is England, Northern Ireland, Scotland and Wales, is represented by 219 players"
+  ) |>  
+  tab_source_note(
+    source_note = md("**By:** Matthew Neus  |  **Source:** [Men's Soccer Roster Data](https://raw.githubusercontent.com/Sports-Roster-Data/mens-soccer/refs/heads/main/combined_rosters_2024.csv)")
+  ) |> 
+  tab_style(
+    style = cell_text(color = "black", weight = "bold", align = "center"),
+    locations = cells_title("title")
+  ) |> 
+  tab_style(
+    style = cell_text(color = "black", align = "center"),
+    locations = cells_title("subtitle")
+  ) |>
+  tab_style(
+     locations = cells_column_labels(columns = everything()),
+     style = list(
+       cell_borders(sides = "bottom", weight = px(3)),
+       cell_text(weight = "bold", size=12)
+     )
+   ) |>
+    fmt_percent(
+    columns = c(PctOfPlayers),
+    decimals = 1
+  )
 ```
 
 
 ```{r}
-europe <- c("ENGLAND", "DENMARK", "NORWAY", "FRANCE", "ITALY", "SPAIN", "SCOTLAND", "IRELAND", "NORTHERN IRELAND", "BULGARIA", "HUNGARY", "SWEDEN", "ESTONIA", "POLAND", "FINLAND", "PORTUGAL", "AUSTRIA", "ICELAND", "NETHERLANDS", "ALBANIA", "CYPRUS", "CROATIA", "BELGIUM", "ESTONIA", "UKRAINE", "SLOVENIA", "SLOVAKIA", "RUSSIA", "HUNGARY", "SERBIA", "GREECE", "WALES", "CROATIA", "ROMANIA", "SWITZERLAND", "LUXEMBOURG", "GIBRALTAR", "NORTH MACEDONIA", "THE CZECH REPUBLIC", "KOSOVO", "BOSNIA AND HERZEGOVINA")
-
-msoc_div1 |>
-  filter(country %in% europe) |>
-  summarise(
-    total = n()
-  )
-
-```
-
-
---1048 European college soccer players at D1 level--
-
-```{r}
-africa <- c("GHANA", "MOROCCO", "CAMEROON", "LESOTHO", "SIERRA LEONE", "DR CONGO", "GAMBIA", "KENYA", "TOGO", "UGANDA", "SOUTH AFRICA", "SENEGAL", "LIBERIA", "NIGERIA", "MOZAMBIQUE", "MONGOLIA", "ZIMBABWE", "ZAMBIA", "SOUTH SUDAN", "IVORY COAST", "ETHIOPIA", "EGYPT", "LIBYA", "CAPE VERDE", "BOTSWANA", "LITHUANIA", "TANZANIA", "BURKINA FASO")
-
-msoc_div1 |>
-  filter(country %in% africa) |>
+msoc_div1_europe |>
+  filter(country == "ENGLAND" | country == "NORTHERN IRELAND" | country == "SCOTLAND" | country == "WALES") |>
   summarise(
     total = n()
   )
 ```
--- 125 players in D1 men's soccer from Africa--
 
-```{r}
-americas <- c("VIRGIN ISLANDS", "COSTA RICA", "ARGENTINA", "BRAZIL", "BAHAMA", "MEXICO", "CANADA", "CHILE", "PANAMA", "COLOMBIA", "BARBADOS", "TRINIDAD AND TOBAGO", "JAMAICO", "ECUADOR", "DOMINICAN REPUBLIC", "PERU", "BERMUDA", "HAITI", "BOLIVIA", "EL SALVADOR", "PANAMA", "GUATEMALA", "PARAGUAY", "HONDURAS", "VENEZUELA")
-
-msoc_div1 |>
-  filter(country %in% americas) |>
-  summarise(
-    total = n()
-  )
-```
---455 D1 players from North and South America, not including the US--
-
-```{r}
-asia <- c("JAPAN", "CHINA", "MOROCCO", "ISRAEL", "SOUTH KOREA", "CHINA", "LEBANON", "INDIA", "TAIWAN", "TURKEY", "JORDAN", "IRAQ")
-
-msoc_div1 |>
-  filter(country %in% asia) |>
-  summarise(
-    total = n()
-  )
-```
--- 129 D1 players from Asia--
-
-```{r}
-msoc_div1 |>
-  filter(country == "USA") |>
-  summarise(
-    total = n()
-  )
-```
---4263 players from the US on D1 rosters--
