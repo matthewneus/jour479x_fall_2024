@@ -2,6 +2,7 @@
 library(tidyverse)
 library(postmastr)
 library(rvest)
+library(waffle)
 ```
 
 ```{r}
@@ -228,7 +229,6 @@ msoc_div1 <- msoc_div1 %>%
     name == 'Nonso Adimabua' ~ 'NIGERIA',
     name == 'Joe Chalwin' ~ 'ENGLAND',
     name == 'Mads Stistrup Petersen' ~ 'DENMARK',
-    name %in% c('Yousef Alsaidi', 'Andrew Hummell', 'Teagan Vail', 'Declan Vail', 'Jackson Wall', 'Neythan Yaucan', 'Yousef Alsaidi') ~ 'TEAM IMPACT',
     name == 'Yoann Araujo' ~ 'FRANCE',
     name %in% c('KK Baffour', 'Daniel Boateng') ~ 'GHANA',
     name == 'Abdoul Karim Pare' ~ 'IVORY COAST',
@@ -436,5 +436,152 @@ msoc_div1_europe |>
   summarise(
     total = n()
   )
+```
+
+
+```{r}
+msoc_div1_conference <- msoc_div1 |>
+  mutate(Conference = case_when(
+     name %in% c('John Holmes', 'Dilen Patel', 'Jackson Wall', 'Andrew Konetsky', 'Declan Vail', 'Teagan Vail', 'Andrew Hummell', 'Quentin "Squishy" Rios') ~ 'Team Impact',
+    team %in% c('Indiana', 'Ohio State', 'Maryland', 'Michigan State', 'Washington', 'UCLA', 'Michigan', 'Wisconsin', 'Penn State', 'Northwestern', 'Rutgers') ~ 'Big Ten',
+    team %in% c('Pittsburgh', 'Clemson', 'North Carolina', 'Stanford', 'Duke', 'Wake Forest', 'Duke', 'Virginia', 'Southern Methodist', 'NC State', 'Notre Dame', 'Syracuse', 'California', 'Virginia Tech', 'Louisville', 'Boston College') ~ 'ACC',
+    team %in% c('Vermont', 'New Hampshire', 'Bryant', 'New Jersey Institute of Technology', 'UMBC', 'Binghamton', 'UMass Lowell', 'Albany') ~ 'American East',
+    team %in% c('Memphis', 'Charlotte', 'South Florida', 'FIU', 'Florida Atlantic', 'Tulsa', 'Temple', 'UAB') ~ 'AAC',
+    team %in% c('George Mason', 'Duquesne', 'Saint Louis', 'Fordham', 'Massachusetts', 'Dayton', 'Davidson', 'St. Bonaventure', 'LaSalle', 'Loyola-Chicago', 'Rhode Island', 'Virginia Commonwealth', 'George Washington', "Saint Joseph's (PA)") ~ 'A10',
+    team %in% c('North Florida', 'Stetson', 'Florida Gulf Coast', 'Bellarmine', 'Central Arkansas', 'Queens (NC)', 'Jacksonville', 'Lipscomb') ~ 'Atlantic Sun',
+    team %in% c('Georgetown', 'Providence', "St. John's", 'UConn', 'Seton Hall', 'Villanova', 'Akron', 'Creighton', 'Marquette', 'DePaul', 'Xavier', 'Butler') ~ 'Big East',
+    team %in% c('High Point', 'Gardner-Webb', 'Winthrop', 'UNC Asheville', 'USC Upstate', 'Longwood', 'Presbyterian College', 'Radford') ~ 'Big South',
+    team %in% c('UC Santa Barbara', 'Cal State Bakersfield', 'Cal Poly', 'UC Irvine', 'Cal State Fullerton', 'UC Davis', 'UC Riverside', 'Sacramento State', 'UC San Diego', 'CSUN') ~ 'Big West',
+    team %in% c('Monmouth', 'Elon', 'College of Charleston', 'Drexel', 'Hofstra', 'UNCW', 'Campbell', 'William & Mary', 'Delaware', 'Northeastern', 'Stony Brook') ~ 'CAA',
+    team %in% c('Oakland', 'Green Bay', 'Robert Morris', 'Milwaukee', 'Purdue-Fort Wayne', 'Detroit Mercy', 'Cleveland State', 'Wright St.', 'IU Indy', 'Northern Kentucky') ~ 'Horizon League',
+    team %in% c('Pennsylvania', 'Princeton', 'Cornell', 'Dartmouth', 'Harvard', 'Columbia', 'Brown', 'Yale') ~ 'Ivy League',
+    team %in% c('Iona', 'Rider', 'Siena', 'Sacred Heart', 'Manhattan','Marist', 'Fairfield', 'Canisius', 'Merrimack', "Saint Peter's", 'Quinnipiac', 'Niagara', "Mount St. Mary's") ~ 'MAAC',
+    team %in% c('Missouri St.', 'Drake', 'Evansville', 'Western Michigan', 'Bowling Green', 'Illinois-Chicago', 'Bradley', 'Belmont', 'Northern Illinois') ~ 'Missouri Valley Conference',
+    team %in% c('Le Moyne', 'Saint Francis (PA)', 'Mercyhurst', 'Fairleigh Dickinson', 'Long Island', 'Howard', 'Stonehill', 'Chicago State', 'Central Connecticut State') ~ 'Northeast Conference',
+    team %in% c('SIUE', 'Houston Christian', 'Liberty', 'Lindenwood (MO)', 'Incarnate Word', 'Western Illinois', 'Southern Ind.', 'Eastern Illinois') ~ 'Ohio Valley Conference',
+    team %in% c('Bucknell', 'Boston', 'American', 'Lafayette', 'Navy', 'Lehigh', 'Loyola Maryland', 'Holy Cross', 'Colgate', 'Army') ~ 'Patriot League',
+    team %in% c('East Tennessee State', 'UNC Greensboro', 'Furman', 'Wofford', 'Mercer', 'VMI') ~ 'Southern Conference',
+    team %in% c('Kansas City', 'Denver', 'Oral Roberts', 'Omaha', 'St. Thomas (MN)') ~ 'Summit League',
+    team %in% c('West Virginia', 'Marshall', 'South Carolina', 'James Madison', 'Kentucky', 'Central Florida', 'Georgia Southern', 'Coastal Carolina', 'Old Dominion', 'Georgia State') ~ 'Sun Belt Conference',
+    team %in% c('San Diego', 'Oregon State', 'San Francisco', 'Loyola Marymount', 'Portland', 'Santa Clara', "Saint Mary's (CA)", 'Pacific', 'Gonzaga') ~ 'West Coast Conference',
+    team %in% c('San Diego State', 'Seattle', 'UNLV', 'California Baptist', 'UT-Rio Grande Valley', 'Utah Valley', 'San Jose State', 'Utah Tech', 'Grand Canyon', 'Air Force') ~ 'Western Athletic Conference'
+     ))
+```
+
+```{r}
+AmericanEast <- msoc_div1_conference |>
+  filter(Conference == "American East")
+Atlantic10 <- msoc_div1_conference |>
+  filter(Conference == "A10")
+AmericanAthletic <- msoc_div1_conference |>
+  filter(Conference == "AAC")
+AtlanticCoast <- msoc_div1_conference |>
+  filter(Conference == "ACC")
+BigTen <- msoc_div1_conference |>
+  filter(Conference == "Big Ten")
+ASUN <- msoc_div1_conference |>
+  filter(Conference == "Atlantic Sun")
+BEast <- msoc_div1_conference |>
+  filter(Conference == "Big East")
+BSouth <- msoc_div1_conference |>
+  filter(Conference == "Big South")
+BWest <- msoc_div1_conference |>
+  filter(Conference == "Big West")
+Coastal <- msoc_div1_conference |>
+  filter(Conference == "CAA")
+Hori <- msoc_div1_conference |>
+  filter(Conference == "Horizon League")
+IvyL <- msoc_div1_conference |>
+  filter(Conference == "Ivy League")
+MidAtlantic <- msoc_div1_conference |>
+  filter(Conference == "MAAC")
+MisValley <- msoc_div1_conference |>
+  filter(Conference == "Missouri Valley Conference")
+Northeast <- msoc_div1_conference |>
+  filter(Conference == "Northeast Conference")
+OhioValley <- msoc_div1_conference |>
+  filter(Conference == "Ohio Valley Conference")
+Pat <- msoc_div1_conference |>
+  filter(Conference == "Patriot League")
+South <- msoc_div1_conference |>
+  filter(Conference == "Southern Conference")
+Sum <- msoc_div1_conference |>
+  filter(Conference == "Summit League")
+SBelt <- msoc_div1_conference |>
+  filter(Conference == "Sun Belt Conference")
+WCoast <- msoc_div1_conference |>
+  filter(Conference == "West Coast Conference")
+WAthletic <- msoc_div1_conference |>
+  filter(Conference == "Western Athletic Conference")
+```
+
+```{r}
+AmEast <- c("North America" = 155, "International" = 89)
+A10 <- c("North America" = 299, "International" = 127)
+AAC <- c("North America" = 146, "International" = 95)
+ACC <- c("North America" = 385, "International" = 104)
+B1G <- c("North America" = 268, "International" = 49, 170)
+ASUN <- c("North America" = 190, "International" = 73)
+BigEast <- c("North America" = 286, "International" = 88)
+BigSouth <- c("North America" = 171, "International" = 89)
+BigWest <- c("North America" = 249, "International" = 53)
+CAA <- c("North America" = 207, "International" = 100)
+Horizon <- c("North America" = 239, "International" = 69)
+Ivy <- c("North America" = 206, "International" = 36)
+MAAC <- c("North America" = 255, "International" = 143)
+MVC <- c("North America" = 180, "International" = 85)
+NEC <- c("North America" = 224, "International" = 78)
+OVC <- c("North America" = 189, "International" = 51)
+Patriot <- c("North America" = 268, "International" = 25, 105)
+Southern <- c("North America" = 139, "International" = 48)
+Summit <- c("North America" = 97, "International" = 52)
+SunBelt <- c("North America" = 157, "International" = 128)
+WCC <- c("North America" = 221, "International" = 66)
+WAC <- c("North America" = 202, "International" = 62)
+```
+
+```{r}
+iron(
+ waffle(B1G/2, 
+        rows = 10, 
+        title="Big Ten Conference", 
+        xlab="1 square = 1 player", 
+        colors = c("black", "lightblue", "white")
+        ),
+ waffle(ACC/2, 
+        rows = 10, 
+        title="Atlantic Coast Conference", 
+        xlab="1 square = 1 player",
+        colors = c("black", "orange")
+        )
+)
+```
+
+```{r}
+waffle(
+        Patriot, 
+        rows = 10, 
+        title="Patriot League", 
+        xlab="1 square = 1 yard", 
+        colors = c("black", "yellow")
+)
+```
+The Patriot League has 293 players rostered, but only 25 are from a continent outside of North America.
+
+```{r}
+iron(
+ waffle(MAAC/2, 
+        rows = 10, 
+        title="Metro Atlantic Athletic Conference", 
+        xlab="1 square = 1 player", 
+        colors = c("black", "lightgreen")
+        ),
+ waffle(Patriot/2, 
+        rows = 10, 
+        title="Patriot League", 
+        xlab="1 square = 1 player",
+        colors = c("black", "yellow", "white")
+        )
+)
 ```
 
