@@ -345,6 +345,46 @@ msoc_div1_europe_gt |> gt() |>
   )
 ```
 
+Looking at specific conference, I wanted to compare some of the best college soccer conferences in the country, the ACC and the Big Ten.
+
+```{r}
+iron(
+ waffle(B1G/2, 
+        rows = 10, 
+        title="Big Ten Conference", 
+        xlab="1 square = 1 player", 
+        colors = c("black", "lightblue", "white")
+        ),
+ waffle(ACC/2, 
+        rows = 10, 
+        title="Atlantic Coast Conference", 
+        xlab="1 square = 1 player",
+        colors = c("black", "orange")
+        )
+)
+```
+
+The ACC has more players, because they have more teams after realignments, but the bring some of the most diverse rosters. The ACC has 104 players outside of North America to the Big Ten's 49. For context, Maryland contributes 12 players to that total.
+
+But the MAAC has the most international players by conference with 143. The Ivy League has the least, with just 36.
+
+```{r}
+iron(
+ waffle(MAAC/2, 
+        rows = 10, 
+        title="Metro Atlantic Athletic Conference", 
+        xlab="1 square = 1 player", 
+        colors = c("black", "lightgreen")
+        ),
+ waffle(Patriot/2, 
+        rows = 10, 
+        title="Patriot League", 
+        xlab="1 square = 1 player",
+        colors = c("black", "yellow", "white")
+        )
+)
+```
+
 Soccer is a global game. Six different continents are represented at the Division I level in the United States. Some players come to the U.S. to pursue a profession career when they didn't succeed in their home country. Others play collegiate soccer to get an education and play the game they love for four more years, and others schools have established pipelines to get the best international talent.
 
 Players from European countries are more likely to come to the United States to play college soccer more than anyone else. While there may not be an avenue to a soccer career abroad, the United States give international players the chance at the collegiate level.
