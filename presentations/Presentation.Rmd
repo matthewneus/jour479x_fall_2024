@@ -445,8 +445,6 @@ WCC <- c("North America" = 221, "International" = 66)
 WAC <- c("North America" = 202, "International" = 62)
 ```
 
-
-
 ```{r}
 iron(
  waffle(B1G/2, 
