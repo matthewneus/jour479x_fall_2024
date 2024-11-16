@@ -1,7 +1,3 @@
-Division I college soccer rosters are diverse, with players representing six of the seven continents. Players call the United States home the most. Europe is the second-most represented continent, as players hail from 22 different European nations.
-
-With over 25,000 players are Division I, II, and III rosters, I decided to just look at Division I rosters and players at some of the best schools in the country.
-
 ```{r}
 library(tidyverse)
 library(postmastr)
@@ -58,10 +54,6 @@ msoc_div1 <- msoc_div1 |>
     .default = pm.state
   ))
 ```
-
-After fixing every player's address whose hometown is in the United States, I needed to fix the countries from outside America. Every city and country is inputted to show up under one country. When every hometown was fit into a certain country, I did the remaining players by name, using game notes for the college they go to.
-
-After every player had a country to their name, I sorted each country into its correct continent. For North America, I included Central American countries like Bermuda and Trinidad and Tobago. Australia and New Zealand were combined into Oceania.
 
 ```{r}
 fifaurl <- "https://inside.fifa.com/fifa-world-ranking/men"
@@ -225,69 +217,6 @@ msoc_div1 <- msoc_div1 |>
   ))
 ```
 
-North America is the most well-represented continent, being home to 4,737 players. Europe houses 1,244 players, while South America only has 140 players. I thought South America would have a larger pool of players, considering countries like Argentina and Brazil, but Europe far surpasses South America.
-
-To show how many players represent each continent, I made a bar chart to display each continent with its number of players. Six athletes on Division I rosters were listed as "Team Impact" players, so I omitted them from the data.
-
-```{r}
-msoc_div1_cont <- msoc_div1 |>
-  group_by(Continent) |>
-  summarise(
-    TotalPlayers = n(),
-    PctOfPlayers = TotalPlayers / 6446
-  ) |>
-  arrange(desc(PctOfPlayers)) |>
-  na.omit()
-
-library(ggplot2)
-library(scales)
-
-ggplot() + 
-  geom_bar(
-    data=msoc_div1_cont, 
-    aes(x=reorder(Continent, TotalPlayers),
-        weight=TotalPlayers)) + 
-  scale_y_continuous(labels=comma) + 
-  labs(
-    title="Division I Soccer Players By Continent",
-    subtitle = "North America produces the most Division I soccer players, led by the U.S. and Canada",
-    x="Continent", 
-    y="Total Number of Players") +
-  theme_minimal() + 
-  coord_flip() +
-  theme_gray()
-```
-
-After establishing how many total players hail from each continent, I wanted to know the percent of each continent in terms of the entire Division I, which is 6,446 players. I made a chart to show the total number of players by continent, and the percentage of players per continent.
-
-```{r}
-msoc_div1_cont |> gt() |> 
-  cols_label(
-    PctOfPlayers = "Percentage of Players"
-  ) |>
-  tab_header(
-    title = "Over 90 Percent of Division I Soccer Rosters Are Players from North American and Europe",
-    subtitle = "North America, with the United States, leads the way. Players from Europe make up almost a fifth of Division I rosters"
-  ) |> tab_style(
-    style = cell_text(color = "black", weight = "bold", align = "center"),
-    locations = cells_title("title")
-  ) |> tab_style(
-    style = cell_text(color = "black", align = "center"),
-    locations = cells_title("subtitle")
-  ) |>
-  tab_source_note(
-    source_note = md("**By:** Matthew Neus  |  **Source:** [Men's Soccer Roster Data](https://raw.githubusercontent.com/Sports-Roster-Data/mens-soccer/refs/heads/main/combined_rosters_2024.csv)")
-  ) |>
-    fmt_percent(
-    columns = c(PctOfPlayers),
-    decimals = 1
-  )
-```
-
-And since Europe is the second-highest represented continent, making up a fifth of Division I roster, I did a breakdown of Europe by region. I divided the continent up into North, South, East and West territories.
-
-Northern Europe houses the most Division I players, with England, Northern Ireland, Scotland and Wales, or the United Kingdom, producing 219 athletes.
-
 ```{r}
 msoc_div1_europe <- msoc_div1 |>
   filter(Continent == 'Europe') |>
@@ -297,198 +226,87 @@ msoc_div1_europe <- msoc_div1 |>
     country %in% c('NORWAY', 'SWEDEN', 'DENMARK', 'FINLAND', 'ICELAND', 'ENGLAND', 'WALES', 'NORTHERN IRELAND', 'SCOTLAND', 'IRELAND', 'LITHUANIA', 'ESTONIA', 'ISLE OF MAN') ~ 'Northern Europe',
     country %in% c('AUSTRIA', 'BELGIUM', 'FRANCE', 'LUXEMBOURG', 'MONACO', 'NETHERLANDS') ~ 'Western Europe'
   ))
+```
 
-msoc_div1_europe |>
-  group_by(Region) |>
+###Cleaning player heights
+  ##Need to finish with players who don't have height listed on profile
+```{r}
+msoc_div1 <- msoc_div1 |>
+  mutate(HeightCleaned = case_when(
+    height %in% c("5\'4\"", '5-4', "5\' 4\''") ~ "\'5-4\'",
+    height %in% c("5\'2\"", '5-2', "5\' 2\''") ~ "\'5-2\'",
+    height %in% c("5\'5\"", '5-5', "5\' 5\''") ~ "\'5-5\'",
+    height %in% c("5\'3\"", '5-3') ~ "\'5-3\'",
+    height %in% c("5\'9\"", '5-9', "5\' 9\''") ~ "\'5-9\'",
+    height %in% c("5\'6\"", '5-6', "5\' 6\''") ~ "\'5-6\'",
+    height %in% c("5\'7\"", '5-7', "5\' 7\''") ~ "\'5-7\'",
+    height %in% c("5\'8\"", '5-8', "5\' 8\''") ~ "\'5-8\'",
+    height %in% c("5\'10\"", '5-10', "5\' 10\''") ~ "\'5-10\'",
+    height %in% c("5\'11\"", '5-11', "5\'111\"", "5\ 11\''") ~ "\'5-11\'",
+    height %in% c("6\'0\"", '6-0', "6\' 0\''") ~ "\'6-0\'",
+    height %in% c("6\'1\"", '6-1', "6\' 1\''") ~ "\'6-1\'",
+    height %in% c("6\'2\"", '6-2', "6\' 2\''") ~ "\'6-2\'",
+    height %in% c("6\'3\"", '6-3', "6\' 3\''") ~ "\'6-3\'",
+    height %in% c("6\'4\"", '6-4') ~ "\'6-4\'",
+    height %in% c("6\'5\"", '6-5') ~ "\'6-5\'",
+    height %in% c("6\'6\"", '6-6') ~ "\'6-6\'",
+    height %in% c("6\'7\"", '6-7') ~ "\'6-7\'"
+  ))
+```
+
+###Cleaning player classes
+  ##All Cleaned
+```{r}
+msoc_div1 <- msoc_div1 |>
+  mutate(ClassCleaned = case_when(
+    class %in% c('Fr.', 'R-Fr.', 'FR', 'Freshman', 'Redshirt Freshman', 'Fy.', 'FY', 'Rf.', 'Fy') ~ 'Freshmen',
+    class %in% c('So.', 'R-So.', 'SO', 'Sophomore', 'Redshirt Sophomore', 'RS So.') ~ 'Sophomore',
+    class %in% c('Jr.', 'R-Jr.', 'JR', 'Junior', 'Redshirt Junior', 'R-Jr', 'RS JR') ~ 'Junior',
+    class %in% c('Sr.', 'R-Sr.', 'SR', 'Senior', 'Redshirt Senior') ~ 'Senior',
+    class %in% c('Gr.', 'R-Gr.', 'GR', 'Grad.','Graduate Student', 'Redshirt Graduate Student', 'Fifth Year', '5th', '6th', 'Sr.+', '5th.') ~ 'Graduate Student',
+    name %in% c('Henrik Weiper') ~ 'Junior',
+    name %in% c('Iyke Dafe', 'Lorenzo Amaral', 'Carlo Brown', 'Shayne Thompson', 'Zion Wharton', 'Heechan Han', 'Diego Elizalde', 'Carter Smith') ~ 'Sophomore',
+    name %in% c('Tanner Barry', 'Harri Sprofera', 'Jack Cloherty', 'Keegan Walpole', 'Mike Balleani', 'Gavin Tabije', 'Kyle Gee', 'Cal Walsh') ~ 'Senior',
+    name %in% c('Taha Kina', 'Scott Gustafson', 'Charlie Adams', 'Levi Pillar') ~ 'Graduate Student',
+    name %in% c('Jamin Gogo Peters', 'Mads Stistrup Petersen', 'Langdon Gryglas', 'Dylan Ellis', 'Adolfo Diaz', 'Greyson Mitchell') ~ 'Junior',
+    name %in% c('Timi Browne', 'Andre Romo', 'Stefano DAgostini', 'Amoni Thomas') ~ 'Freshmen'
+  ))
+
+msoc_div1 |>
+  group_by(ClassCleaned) |>
   summarise(
-    Total = n()
+    total = n()
   )
 ```
+-Freshmen is the most represented class, sophomore and junior are seperated by just two players.
+- Seems once a player plays one or two seasons, they look for other opportunities outside of the college game
 
+
+###Cleaning player positions
+  ##Cleaned all players with listed positions
 ```{r}
-msoc_div1_europe_gt <- msoc_div1_europe |>
-  group_by(Region) |>
-  summarise(
-    TotalPlayers = n(),
-    PctOfPlayers = TotalPlayers / 1244
-  ) |>
-  arrange(desc(PctOfPlayers))
+msoc_div1 <- msoc_div1 |>
+  mutate(PositionCleaned = case_when(
+    position %in% c('Goalkeeper', 'GK', 'GOALKEEPER', 'G', 'Goaltender', 'Goal Keeper') ~ 'Goalie',
+    position %in% c('Forward', 'Attack', 'F', 'FORWARD', 'F/FM', 'Striker', 'Winger-Forward', 'Winger', 'W', 'Wing', 'Foward') ~ 'Forward',
+    position %in% c('Midfield', 'M', 'MIDFIELD', 'Midfielder', 'Central Midfielder', 'MF', 'CAM', 'Left Midfielder', 'Center Midfielder', 'Midfielder (Captain)') ~ 'Midfield',
+    position %in% c('Defender', 'D', 'DEFENSE', 'Defense', 'Back', 'B', 'F/B', 'CB', 'LCB', 'Center Back', 'Outside Back', 'Left Back', 'Center/Left Back', 'Defense (Captain)', 'Centerback', 'Defender/Center Back') ~ 'Defense',
+    position %in% c('Midfielder/Defender', 'D/M', 'B/M', 'Defender/Midfielder', 'M/D', 'MF/D', 'D/MF', 'Defender / Midfielder', 'Midfielder / Defender', 'Defense/Midfield', 'Midfield/Back', 'Defender/Midfielder (Captain)', 'Midfield/Defense (Captain)', 'Midfield/Defense', 'Midfielder/Back', 'Midfielder/Defense', 'Defense/Midfielder', 'Defender/Midfield', 'Midfield/Defender', 'Defender/Midfield', 'Defender/ Midfielder', 'Midfield / Defense', 'Defense / Midfield') ~ 'Midfield/Defense',
+    position %in% c('F/M', 'Forward/Midfielder', 'Midfielder/Forward', 'MF/F', 'M/F', 'F/MF', 'For./Mid', 'FWD/MID', 'Forward/Midfield', 'Forward / Midfielder', 'Midfield/Forward', 'Midfielder / Forward', 'Midfielder-Striker', 'Forward/ Midfielder', 'Midfielder/ Forward', 'Forward / Midfield') ~ 'Forward/Midfield',
+    position %in% c('F/D', 'Defender/Forward', 'Forward/Defense', 'Forward / Defender', 'Defender/Winger', 'Defense/Forward') ~ 'Forward/Defender'
+  ))
 
-msoc_div1_europe_gt |> gt() |> 
-  cols_label(
-    PctOfPlayers = "Percentage of Players"
-  ) |>
-  tab_header(
-    title = "Northern Europe, Including the United Kingdom, Sends the Most Players to Division I Colleges",
-    subtitle = "The United Kingdon, which is England, Northern Ireland, Scotland and Wales, is represented by 219 players in Northern Europe"
-  ) |>  
-  tab_source_note(
-    source_note = md("**By:** Matthew Neus  |  **Source:** [Men's Soccer Roster Data](https://raw.githubusercontent.com/Sports-Roster-Data/mens-soccer/refs/heads/main/combined_rosters_2024.csv)")
-  ) |> 
-  tab_style(
-    style = cell_text(color = "black", weight = "bold", align = "center"),
-    locations = cells_title("title")
-  ) |> 
-  tab_style(
-    style = cell_text(color = "black", align = "center"),
-    locations = cells_title("subtitle")
-  ) |>
-  tab_style(
-     locations = cells_column_labels(columns = everything()),
-     style = list(
-       cell_borders(sides = "bottom", weight = px(3)),
-       cell_text(weight = "bold", size=12)
-     )
-   ) |>
-    fmt_percent(
-    columns = c(PctOfPlayers),
-    decimals = 1
+msoc_div1 |>
+  group_by(PositionCleaned) |>
+  summarise(
+    total = n()
   )
 ```
-
-Looking at specific conference, I wanted to compare some of the best college soccer conferences in the country, the ACC and the Big Ten.
-
-```{r}
-msoc_div1_conference <- msoc_div1 |>
-  mutate(Conference = case_when(
-     name %in% c('John Holmes', 'Dilen Patel', 'Jackson Wall', 'Andrew Konetsky', 'Declan Vail', 'Teagan Vail', 'Andrew Hummell', 'Quentin "Squishy" Rios') ~ 'Team Impact',
-    team %in% c('Indiana', 'Ohio State', 'Maryland', 'Michigan State', 'Washington', 'UCLA', 'Michigan', 'Wisconsin', 'Penn State', 'Northwestern', 'Rutgers') ~ 'Big Ten',
-    team %in% c('Pittsburgh', 'Clemson', 'North Carolina', 'Stanford', 'Duke', 'Wake Forest', 'Duke', 'Virginia', 'Southern Methodist', 'NC State', 'Notre Dame', 'Syracuse', 'California', 'Virginia Tech', 'Louisville', 'Boston College') ~ 'ACC',
-    team %in% c('Vermont', 'New Hampshire', 'Bryant', 'New Jersey Institute of Technology', 'UMBC', 'Binghamton', 'UMass Lowell', 'Albany') ~ 'American East',
-    team %in% c('Memphis', 'Charlotte', 'South Florida', 'FIU', 'Florida Atlantic', 'Tulsa', 'Temple', 'UAB') ~ 'AAC',
-    team %in% c('George Mason', 'Duquesne', 'Saint Louis', 'Fordham', 'Massachusetts', 'Dayton', 'Davidson', 'St. Bonaventure', 'LaSalle', 'Loyola-Chicago', 'Rhode Island', 'Virginia Commonwealth', 'George Washington', "Saint Joseph's (PA)") ~ 'A10',
-    team %in% c('North Florida', 'Stetson', 'Florida Gulf Coast', 'Bellarmine', 'Central Arkansas', 'Queens (NC)', 'Jacksonville', 'Lipscomb') ~ 'Atlantic Sun',
-    team %in% c('Georgetown', 'Providence', "St. John's", 'UConn', 'Seton Hall', 'Villanova', 'Akron', 'Creighton', 'Marquette', 'DePaul', 'Xavier', 'Butler') ~ 'Big East',
-    team %in% c('High Point', 'Gardner-Webb', 'Winthrop', 'UNC Asheville', 'USC Upstate', 'Longwood', 'Presbyterian College', 'Radford') ~ 'Big South',
-    team %in% c('UC Santa Barbara', 'Cal State Bakersfield', 'Cal Poly', 'UC Irvine', 'Cal State Fullerton', 'UC Davis', 'UC Riverside', 'Sacramento State', 'UC San Diego', 'CSUN') ~ 'Big West',
-    team %in% c('Monmouth', 'Elon', 'College of Charleston', 'Drexel', 'Hofstra', 'UNCW', 'Campbell', 'William & Mary', 'Delaware', 'Northeastern', 'Stony Brook') ~ 'CAA',
-    team %in% c('Oakland', 'Green Bay', 'Robert Morris', 'Milwaukee', 'Purdue-Fort Wayne', 'Detroit Mercy', 'Cleveland State', 'Wright St.', 'IU Indy', 'Northern Kentucky') ~ 'Horizon League',
-    team %in% c('Pennsylvania', 'Princeton', 'Cornell', 'Dartmouth', 'Harvard', 'Columbia', 'Brown', 'Yale') ~ 'Ivy League',
-    team %in% c('Iona', 'Rider', 'Siena', 'Sacred Heart', 'Manhattan','Marist', 'Fairfield', 'Canisius', 'Merrimack', "Saint Peter's", 'Quinnipiac', 'Niagara', "Mount St. Mary's") ~ 'MAAC',
-    team %in% c('Missouri St.', 'Drake', 'Evansville', 'Western Michigan', 'Bowling Green', 'Illinois-Chicago', 'Bradley', 'Belmont', 'Northern Illinois') ~ 'Missouri Valley Conference',
-    team %in% c('Le Moyne', 'Saint Francis (PA)', 'Mercyhurst', 'Fairleigh Dickinson', 'Long Island', 'Howard', 'Stonehill', 'Chicago State', 'Central Connecticut State') ~ 'Northeast Conference',
-    team %in% c('SIUE', 'Houston Christian', 'Liberty', 'Lindenwood (MO)', 'Incarnate Word', 'Western Illinois', 'Southern Ind.', 'Eastern Illinois') ~ 'Ohio Valley Conference',
-    team %in% c('Bucknell', 'Boston', 'American', 'Lafayette', 'Navy', 'Lehigh', 'Loyola Maryland', 'Holy Cross', 'Colgate', 'Army') ~ 'Patriot League',
-    team %in% c('East Tennessee State', 'UNC Greensboro', 'Furman', 'Wofford', 'Mercer', 'VMI') ~ 'Southern Conference',
-    team %in% c('Kansas City', 'Denver', 'Oral Roberts', 'Omaha', 'St. Thomas (MN)') ~ 'Summit League',
-    team %in% c('West Virginia', 'Marshall', 'South Carolina', 'James Madison', 'Kentucky', 'Central Florida', 'Georgia Southern', 'Coastal Carolina', 'Old Dominion', 'Georgia State') ~ 'Sun Belt Conference',
-    team %in% c('San Diego', 'Oregon State', 'San Francisco', 'Loyola Marymount', 'Portland', 'Santa Clara', "Saint Mary's (CA)", 'Pacific', 'Gonzaga') ~ 'West Coast Conference',
-    team %in% c('San Diego State', 'Seattle', 'UNLV', 'California Baptist', 'UT-Rio Grande Valley', 'Utah Valley', 'San Jose State', 'Utah Tech', 'Grand Canyon', 'Air Force') ~ 'Western Athletic Conference'
-     ))
-
-AmericanEast <- msoc_div1_conference |>
-  filter(Conference == "American East")
-Atlantic10 <- msoc_div1_conference |>
-  filter(Conference == "A10")
-AmericanAthletic <- msoc_div1_conference |>
-  filter(Conference == "AAC")
-AtlanticCoast <- msoc_div1_conference |>
-  filter(Conference == "ACC")
-BigTen <- msoc_div1_conference |>
-  filter(Conference == "Big Ten")
-ASUN <- msoc_div1_conference |>
-  filter(Conference == "Atlantic Sun")
-BEast <- msoc_div1_conference |>
-  filter(Conference == "Big East")
-BSouth <- msoc_div1_conference |>
-  filter(Conference == "Big South")
-BWest <- msoc_div1_conference |>
-  filter(Conference == "Big West")
-Coastal <- msoc_div1_conference |>
-  filter(Conference == "CAA")
-Hori <- msoc_div1_conference |>
-  filter(Conference == "Horizon League")
-IvyL <- msoc_div1_conference |>
-  filter(Conference == "Ivy League")
-MidAtlantic <- msoc_div1_conference |>
-  filter(Conference == "MAAC")
-MisValley <- msoc_div1_conference |>
-  filter(Conference == "Missouri Valley Conference")
-Northeast <- msoc_div1_conference |>
-  filter(Conference == "Northeast Conference")
-OhioValley <- msoc_div1_conference |>
-  filter(Conference == "Ohio Valley Conference")
-Pat <- msoc_div1_conference |>
-  filter(Conference == "Patriot League")
-South <- msoc_div1_conference |>
-  filter(Conference == "Southern Conference")
-Sum <- msoc_div1_conference |>
-  filter(Conference == "Summit League")
-SBelt <- msoc_div1_conference |>
-  filter(Conference == "Sun Belt Conference")
-WCoast <- msoc_div1_conference |>
-  filter(Conference == "West Coast Conference")
-WAthletic <- msoc_div1_conference |>
-  filter(Conference == "Western Athletic Conference")
-
-AmEast <- c("North America" = 155, "International" = 89)
-A10 <- c("North America" = 299, "International" = 127)
-AAC <- c("North America" = 146, "International" = 95)
-ACC <- c("North America" = 385, "International" = 104)
-B1G <- c("North America" = 268, "International" = 49, 170)
-ASUN <- c("North America" = 190, "International" = 73)
-BigEast <- c("North America" = 286, "International" = 88)
-BigSouth <- c("North America" = 171, "International" = 89)
-BigWest <- c("North America" = 249, "International" = 53)
-CAA <- c("North America" = 207, "International" = 100)
-Horizon <- c("North America" = 239, "International" = 69)
-Ivy <- c("North America" = 206, "International" = 36)
-MAAC <- c("North America" = 255, "International" = 143)
-MVC <- c("North America" = 180, "International" = 85)
-NEC <- c("North America" = 224, "International" = 78)
-OVC <- c("North America" = 189, "International" = 51)
-Patriot <- c("North America" = 268, "International" = 25, 105)
-Southern <- c("North America" = 139, "International" = 48)
-Summit <- c("North America" = 97, "International" = 52)
-SunBelt <- c("North America" = 157, "International" = 128)
-WCC <- c("North America" = 221, "International" = 66)
-WAC <- c("North America" = 202, "International" = 62)
-```
-
-```{r}
-iron(
- waffle(B1G/2, 
-        rows = 10, 
-        title="Big Ten Conference", 
-        xlab="1 square = 1 player", 
-        colors = c("black", "lightblue", "white")
-        ),
- waffle(ACC/2, 
-        rows = 10, 
-        title="Atlantic Coast Conference", 
-        xlab="1 square = 1 player",
-        colors = c("black", "orange")
-        )
-)
-```
-
-The ACC has more players, because they have more teams after realignments, but the bring some of the most diverse rosters. The ACC has 104 players outside of North America to the Big Ten's 49. For context, Maryland contributes 12 players to that total.
-
-But the MAAC has the most international players by conference with 143. The Ivy League has the least, with just 36.
-
-```{r}
-iron(
- waffle(MAAC/2, 
-        rows = 10, 
-        title="Metro Atlantic Athletic Conference", 
-        xlab="1 square = 1 player", 
-        colors = c("black", "lightgreen")
-        ),
- waffle(Patriot/2, 
-        rows = 10, 
-        title="Patriot League", 
-        xlab="1 square = 1 player",
-        colors = c("black", "yellow", "white")
-        )
-)
-```
-
-Soccer is a global game. Six different continents are represented at the Division I level in the United States. Some players come to the U.S. to pursue a profession career when they didn't succeed in their home country. Others play collegiate soccer to get an education and play the game they love for four more years, and others schools have established pipelines to get the best international talent.
-
-Players from European countries are more likely to come to the United States to play college soccer more than anyone else. While there may not be an avenue to a soccer career abroad, the United States give international players the chance at the collegiate level.
+- More midfielders than any other position.
+- Not many goalies rostered, which makes sense since each team only has two or three each season.
 
 
+###Next Steps
+I think for this part of the presentation I want to focus on player positions. I want to see if there are trends, like taller players as goalies or a certain class being a bulk of a position group.
 
-###Second Part of Presentions###
-
-
+From there, I want to look into the player position and continent data to see if one continent or country produces the most players for a certain position. I would love to show this data off in a map -- my initial thoughts were a map of each continent for each position group where a country is filled in, either light or dark, based on the number of players from each country. My next step will be working with the right package for making maps to display the player position data.
