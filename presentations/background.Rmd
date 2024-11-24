@@ -487,8 +487,54 @@ Soccer is a global game. Six different continents are represented at the Divisio
 
 Players from European countries are more likely to come to the United States to play college soccer more than anyone else. While there may not be an avenue to a soccer career abroad, the United States give international players the chance at the collegiate level.
 
+```{r}
+msoc_div1_all <- msoc_div1 |>
+  mutate(Region = case_when(
+    country %in% c('ALBANIA', 'BOSNIA AND HERZEGOVINA', 'CROATIA', 'GREECE', 'ITALY', 'NORTH MACEDONIA', 'PORTUGAL', 'SERBIA', 'SLOVENIA', 'SPAIN', 'CYPRUS', 'BULGARIA', 'ROMANIA', 'KOSOVO', 'GIBRALTAR') ~ 'Southern Europe',
+    country %in% c('GERMANY', 'POLAND', 'SWITZERLAND', 'AUSTRIA', 'SLOVAKIA', 'HUNGARY', 'THE CZECH REPUBLIC', 'UKRAINE') ~ 'Eastern Europe',
+    country %in% c('NORWAY', 'SWEDEN', 'DENMARK', 'FINLAND', 'ICELAND', 'ENGLAND', 'WALES', 'NORTHERN IRELAND', 'SCOTLAND', 'IRELAND', 'LITHUANIA', 'ESTONIA', 'ISLE OF MAN') ~ 'Northern Europe',
+    country %in% c('AUSTRIA', 'BELGIUM', 'FRANCE', 'LUXEMBOURG', 'MONACO', 'NETHERLANDS') ~ 'Western Europe'
+  )) |>
+  mutate(Conference = case_when(
+     name %in% c('John Holmes', 'Dilen Patel', 'Jackson Wall', 'Andrew Konetsky', 'Declan Vail', 'Teagan Vail', 'Andrew Hummell', 'Quentin "Squishy" Rios') ~ 'Team Impact',
+    team %in% c('Indiana', 'Ohio State', 'Maryland', 'Michigan State', 'Washington', 'UCLA', 'Michigan', 'Wisconsin', 'Penn State', 'Northwestern', 'Rutgers') ~ 'Big Ten',
+    team %in% c('Pittsburgh', 'Clemson', 'North Carolina', 'Stanford', 'Duke', 'Wake Forest', 'Duke', 'Virginia', 'Southern Methodist', 'NC State', 'Notre Dame', 'Syracuse', 'California', 'Virginia Tech', 'Louisville', 'Boston College') ~ 'ACC',
+    team %in% c('Vermont', 'New Hampshire', 'Bryant', 'New Jersey Institute of Technology', 'UMBC', 'Binghamton', 'UMass Lowell', 'Albany') ~ 'American East',
+    team %in% c('Memphis', 'Charlotte', 'South Florida', 'FIU', 'Florida Atlantic', 'Tulsa', 'Temple', 'UAB') ~ 'AAC',
+    team %in% c('George Mason', 'Duquesne', 'Saint Louis', 'Fordham', 'Massachusetts', 'Dayton', 'Davidson', 'St. Bonaventure', 'LaSalle', 'Loyola-Chicago', 'Rhode Island', 'Virginia Commonwealth', 'George Washington', "Saint Joseph's (PA)") ~ 'A10',
+    team %in% c('North Florida', 'Stetson', 'Florida Gulf Coast', 'Bellarmine', 'Central Arkansas', 'Queens (NC)', 'Jacksonville', 'Lipscomb') ~ 'Atlantic Sun',
+    team %in% c('Georgetown', 'Providence', "St. John's", 'UConn', 'Seton Hall', 'Villanova', 'Akron', 'Creighton', 'Marquette', 'DePaul', 'Xavier', 'Butler') ~ 'Big East',
+    team %in% c('High Point', 'Gardner-Webb', 'Winthrop', 'UNC Asheville', 'USC Upstate', 'Longwood', 'Presbyterian College', 'Radford') ~ 'Big South',
+    team %in% c('UC Santa Barbara', 'Cal State Bakersfield', 'Cal Poly', 'UC Irvine', 'Cal State Fullerton', 'UC Davis', 'UC Riverside', 'Sacramento State', 'UC San Diego', 'CSUN') ~ 'Big West',
+    team %in% c('Monmouth', 'Elon', 'College of Charleston', 'Drexel', 'Hofstra', 'UNCW', 'Campbell', 'William & Mary', 'Delaware', 'Northeastern', 'Stony Brook') ~ 'CAA',
+    team %in% c('Oakland', 'Green Bay', 'Robert Morris', 'Milwaukee', 'Purdue-Fort Wayne', 'Detroit Mercy', 'Cleveland State', 'Wright St.', 'IU Indy', 'Northern Kentucky') ~ 'Horizon League',
+    team %in% c('Pennsylvania', 'Princeton', 'Cornell', 'Dartmouth', 'Harvard', 'Columbia', 'Brown', 'Yale') ~ 'Ivy League',
+    team %in% c('Iona', 'Rider', 'Siena', 'Sacred Heart', 'Manhattan','Marist', 'Fairfield', 'Canisius', 'Merrimack', "Saint Peter's", 'Quinnipiac', 'Niagara', "Mount St. Mary's") ~ 'MAAC',
+    team %in% c('Missouri St.', 'Drake', 'Evansville', 'Western Michigan', 'Bowling Green', 'Illinois-Chicago', 'Bradley', 'Belmont', 'Northern Illinois') ~ 'Missouri Valley Conference',
+    team %in% c('Le Moyne', 'Saint Francis (PA)', 'Mercyhurst', 'Fairleigh Dickinson', 'Long Island', 'Howard', 'Stonehill', 'Chicago State', 'Central Connecticut State') ~ 'Northeast Conference',
+    team %in% c('SIUE', 'Houston Christian', 'Liberty', 'Lindenwood (MO)', 'Incarnate Word', 'Western Illinois', 'Southern Ind.', 'Eastern Illinois') ~ 'Ohio Valley Conference',
+    team %in% c('Bucknell', 'Boston', 'American', 'Lafayette', 'Navy', 'Lehigh', 'Loyola Maryland', 'Holy Cross', 'Colgate', 'Army') ~ 'Patriot League',
+    team %in% c('East Tennessee State', 'UNC Greensboro', 'Furman', 'Wofford', 'Mercer', 'VMI') ~ 'Southern Conference',
+    team %in% c('Kansas City', 'Denver', 'Oral Roberts', 'Omaha', 'St. Thomas (MN)') ~ 'Summit League',
+    team %in% c('West Virginia', 'Marshall', 'South Carolina', 'James Madison', 'Kentucky', 'Central Florida', 'Georgia Southern', 'Coastal Carolina', 'Old Dominion', 'Georgia State') ~ 'Sun Belt Conference',
+    team %in% c('San Diego', 'Oregon State', 'San Francisco', 'Loyola Marymount', 'Portland', 'Santa Clara', "Saint Mary's (CA)", 'Pacific', 'Gonzaga') ~ 'West Coast Conference',
+    team %in% c('San Diego State', 'Seattle', 'UNLV', 'California Baptist', 'UT-Rio Grande Valley', 'Utah Valley', 'San Jose State', 'Utah Tech', 'Grand Canyon', 'Air Force') ~ 'Western Athletic Conference'
+     ))
+  
+```
+
+
+
+###Writing New CSV file
+```{r}
+write.csv(msoc_div1_europe, "msoc_div1_europe.csv")
+write_csv(msoc_div1_all, "msoc_div1_all.csv")
+```
+
 
 
 ###Second Part of Presentions###
+
+
 
 
