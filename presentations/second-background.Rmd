@@ -173,3 +173,64 @@ msoc_div1_fixed |>
   - I want to incorporate the heights into the analysis, seeing if there is a possible link between taller players being defenders/goalies or shorter players playing in more attacking positions. Or seeing if certain teams have a tendency to play taller players at those positions compared to other teams.
   - I think there is a story with the position data, especially for players from Northern Europe. England leads in three groups, but Norway, Sweden and Denmark are high up on the list.
   
+
+###12/2 UPDATE
+
+
+I've cleaned the positions for each player, but now I'm still wondering how the position data is spread around each country, specifically Europe. Defenders and midfielders are the most common while England and Germany produce the most players from those position groups.
+```{r}
+msoc_div1_europe <- msoc_div1_fixed |>
+  group_by(country) |>
+  filter(Continent == "Europe") |>
+  summarise(
+    total = n()
+  )
+  
+```
+
+Defenders and midfielders are the two most common positions to be represented by players from European countries. From those top two position groups to forwards, there is almost a 200 player difference. When teams look for international players that can play on the defensive end of their formations, players from Europe are the most common to fill those spots.
+
+The one player listed at a forward or defender, Ken Raghoebar from the Netherlands who plays for Jacksonville, is a player that most likely plays as a winger or fullback and can play in the wider areas of the formation.
+```{r}
+msoc_div1_postotals <- msoc_div1_fixed |>
+  filter(Continent == "Europe") |>
+  group_by(Continent, PositionCleaned) |>
+  summarise(
+    total = n()
+  ) |>
+  arrange(desc(total))
+
+ggplot() + 
+  geom_bar(
+    data=msoc_div1_postotals, 
+    aes(x=reorder(PositionCleaned, total),
+        weight=total)) + 
+  scale_y_continuous(labels=comma) + 
+  theme_minimal() + 
+  coord_flip()
+```
+
+Looking at just players from Europe, I broke down each player into groups based on what country they are from and what position they play. England, Germany and Spain have the most players, with defenders being the most popular position for England and Germany. Germany represents 80 Division I defenders, the most players for a certain position for any European country, while 69 players from England are defenders. Germany also has more goalies than any other country with 24.
+
+Albania's lone Division I player plays in the midfield, as does the only player from Monaco, the Isle of Man and Romania.
+```{r}
+msoc_div1_positions <- msoc_div1_fixed |>
+  group_by(PositionCleaned, country) |>
+  filter(Continent == "Europe") |>
+  summarise(
+    total = n()
+  )
+
+ggplot() + 
+  geom_bar(
+    data=msoc_div1_positions, 
+    aes(x=reorder(country, PositionCleaned),
+        weight=total, 
+        fill=PositionCleaned)) + 
+  coord_flip()
+```
+
+
+With there being so many defenders from Europe, my next step is to finish cleaning the heights of every player to see if there is a consistent height. Once I complete the height cleaning for every player, I can see if the average height is taller than players that play in the midfield or attack, which I assume it will be.
+
+I am also going to make a choropleth map in datawrapper for Europe to show the number of players from each country. When I make the map, how will I be able to import it into R?
