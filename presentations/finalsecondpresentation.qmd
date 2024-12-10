@@ -1,0 +1,48 @@
+```{r}
+library(tidyverse)
+library(postmastr)
+library(rvest)
+library(ggplot2)
+library(scales)
+library(gt)
+library(waffle)
+
+msoc_div1_new <- read_csv("~/Downloads/MSOC Roster Data - Roster Data.csv")
+
+```
+
+###FRAME THIS BROAD TO SPECIFIC --\> COUNTRIES TO POSITIONS (Already somewhat done w/ first graph w/ European countries and position data) TO PLAYERS
+
+```{r}
+library(magick)
+
+EuropeChart <- image_read('J479XGraph.png')
+print(image, info = FALSE)
+```
+
+```{r}
+msoc_div1_eupos <- msoc_div1_new |>
+  group_by(PositionCleaned, country) |>
+  filter(Continent == "Europe") |>
+  summarise(
+    total = n()
+  )
+
+ggplot() + 
+  geom_bar(
+    data=msoc_div1_eupos, 
+    aes(x=reorder(country, PositionCleaned),
+        weight=total, 
+        fill=PositionCleaned)) + 
+  coord_flip()
+```
+
+```{r}
+msoc_div1_eup <- msoc_div1_new |>
+  filter(Continent == "Europe") |>
+  group_by(country) |>
+  summarise(
+    total = n()
+  )
+  
+```

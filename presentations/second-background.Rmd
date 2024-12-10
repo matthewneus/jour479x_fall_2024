@@ -24,7 +24,7 @@ msoc_div1_all <- msoc_div1_all |>
     height %in% c("5\'7\"", '5-7', "5\' 7\''") ~ "\'5-7\'",
     height %in% c("5\'8\"", '5-8', "5\' 8\''") ~ "\'5-8\'",
     height %in% c("5\'10\"", '5-10', "5\' 10\''") ~ "\'5-10\'",
-    height %in% c("5\'11\"", '5-11', "5\'111\"", "5\ 11\''") ~ "\'5-11\'",
+    height %in% c("5\'11\"", '5-11', "5\'111\"", "5\ 11\''", "5\' 11\''", "5\' 11\"") ~ "\'5-11\'",
     height %in% c("6\'0\"", '6-0', "6\' 0\''") ~ "\'6-0\'",
     height %in% c("6\'1\"", '6-1', "6\' 1\''") ~ "\'6-1\'",
     height %in% c("6\'2\"", '6-2', "6\' 2\''") ~ "\'6-2\'",
@@ -32,8 +32,10 @@ msoc_div1_all <- msoc_div1_all |>
     height %in% c("6\'4\"", '6-4', "6\' 4\''") ~ "\'6-4\'",
     height %in% c("6\'5\"", '6-5', "6\' 5\''") ~ "\'6-5\'",
     height %in% c("6\'6\"", '6-6', "6\' 6\''") ~ "\'6-6\'",
-    height %in% c("6\'7\"", '6-7', "6\' 7\''") ~ "\'6-7\'"
+    height %in% c("6\'7\"", '6-7', "6\' 7\''") ~ "\'6-7\'",
+    height %in% c("6\' 8\''") ~ "\'6-8\'"
   ))
+
 ```
 
 ###Cleaning player classes
@@ -234,3 +236,41 @@ ggplot() +
 With there being so many defenders from Europe, my next step is to finish cleaning the heights of every player to see if there is a consistent height. Once I complete the height cleaning for every player, I can see if the average height is taller than players that play in the midfield or attack, which I assume it will be.
 
 I am also going to make a choropleth map in datawrapper for Europe to show the number of players from each country. When I make the map, how will I be able to import it into R?
+
+```{r}
+msoc_div1_fixed |>
+  group_by(Continent) |>
+  summarise(
+    total = n()
+  )
+```
+
+```{r}
+msoc_div1_fixed |>
+  group_by(team) |>
+  summarise(
+    total = n()
+  )
+```
+
+
+
+```{r}
+msoc_div1_new <- read_csv("~/Downloads/MSOC Roster Data - Roster Data.csv")
+
+msoc_div1_new |>
+  group_by(PositionCleaned) |>
+  summarise(
+    total = n()
+  )
+```
+
+```{r}
+msoc_div1_all |>
+  group_by(Continent) |>
+  summarise(
+    total = n()
+  )
+```
+
+
