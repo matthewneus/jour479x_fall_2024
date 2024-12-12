@@ -11,7 +11,7 @@ msoc_div1_new <- read_csv("~/Downloads/MSOC Roster Data - Roster Data.csv")
 
 ```
 
-###FRAME THIS BROAD TO SPECIFIC --\> COUNTRIES(datawrapper chart) TO POSITIONS (Already somewhat done w/ first graph w/ European countries and position data) TO PLAYERS
+College soccer rosters in Division I are internationally diverse. Over 20 percent of players are from continents outside of North America, and over 30 percent are from countries beyond the United States. These players play collegiate soccer to earn an education while trying to start a professional soccer career.
 
 1,244 Division I soccer players hail from Europe. England and Germany are the two most well-represented countries, sending 202 and 186 players to collegiate soccer programs, respectively.
 
@@ -52,7 +52,7 @@ ggplot() +
 
 Europe dominates the defensive positions on rosters, but Africa, Asia and South America make up for a plethora of midfielders. From those three continents, 159 midfielders appear in collegiate soccer.
 
-Forwards are more common to come from Africa or Asia, with 45 and 35 forwards, respectively.
+Forwards are more common to come from Africa or Asia, with 45 and 35 attackers, respectively.
 
 ```{r}
 msoc_div1_positions <- msoc_div1_new |>
@@ -74,3 +74,89 @@ ggplot() +
     y="Total Number of Players") +
   theme_classic()
 ```
+
+Across Division I soccer, most players are either 6' 0" or taller. There are 893 players that are exactly six feet tall, and 3,120 players that are six feet or taller. The highest Division I player, Jackson Nabors of Davidson, is a forward/midfielder standing at 6' 8".
+
+```{r,  message = FALSE, warning = FALSE}
+msoc_div1_new <- msoc_div1_new |>
+  mutate(HeightCleaned = case_when(
+    height %in% c("5\'4\"", '5-4', "5\' 4\''", '5\' 4\"') ~ "\'5-4\'",
+    height %in% c("5\'2\"", '5-2', "5\' 2\''", '5\' 2\"') ~ "\'5-2\'",
+    height %in% c("5\'5\"", '5-5', "5\' 5\''", '5\' 5\"') ~ "\'5-5\'",
+    height %in% c("5\'3\"", '5-3', '5\' 3\"') ~ "\'5-3\'",
+    height %in% c("5\'9\"", '5-9', "5\' 9\''", '5\' 9\"') ~ "\'5-9\'",
+    height %in% c("5\'6\"", '5-6', "5\' 6\''", '5\' 6\"') ~ "\'5-6\'",
+    height %in% c("5\'7\"", '5-7', "5\' 7\''", '5\' 7\"') ~ "\'5-7\'",
+    height %in% c("5\'8\"", '5-8', "5\' 8\''", '5\' 8\"') ~ "\'5-8\'",
+    height %in% c("5\'10\"", '5-10', "5\' 10\''", '5\' 10\"') ~ "\'5-10\'",
+    height %in% c("5\'11\"", '5-11', "5\'111\"", "5\ 11\''", "5\' 11\''", "5\' 11\"", '5\' 11\"') ~ "\'5-11\'",
+    height %in% c("6\'0\"", '6-0', "6\' 0\''", '6\' 0\"') ~ "\'6-0\'", 
+    height %in% c("6\'1\"", '6-1', "6\' 1\''", '6\' 1\"') ~ "\'6-1\'",
+    height %in% c("6\'2\"", '6-2', "6\' 2\''", '6\' 2\"') ~ "\'6-2\'",
+    height %in% c("6\'3\"", '6-3', "6\' 3\''", '6\' 3\"') ~ "\'6-3\'",
+    height %in% c("6\'4\"", '6-4', "6\' 4\''", '6\' 4\"') ~ "\'6-4\'",
+    height %in% c("6\'5\"", '6-5', "6\' 5\''", '6\' 5\"') ~ "\'6-5\'",
+    height %in% c("6\'6\"", '6-6', "6\' 6\''", '6\' 6\"') ~ "\'6-6\'",
+    height %in% c("6\'7\"", '6-7', "6\' 7\''", '6\' 7\"') ~ "\'6-7\'",
+    height %in% c("6\' 8\''", '6\' 8\"') ~ "\'6-8\'"
+  ))
+
+msoc_div1_updated <- read_csv("msoc_div1_new.csv")
+
+```
+
+Many teams opt to look for goalkeepers with height, as they will be in between the posts and crossbar and tasked with diving to stop shots fired their way. For goalies that had heights listed on college rosters, which was 756, 675 were 6' 0" or taller. This strategy of electing to recruit taller players is shared when teams assemble their back lines. There are 1,119 defenders on Division I rosters that are 6' 0" or taller, compared to only 650 that are shorter than the six feet threshold.
+
+```{r}
+msoc_div1_gk <- msoc_div1_updated |>
+  group_by(HeightCleaned) |>
+  filter(PositionCleaned == "Goalie") |>
+  filter(HeightCleaned >= "'6-0'") |>
+  summarise(
+    total = n()
+  )
+
+ggplot() + 
+  geom_bar(
+    data=msoc_div1_gk, 
+    aes(x=reorder(HeightCleaned, total),
+        weight=total)) + 
+  scale_y_continuous(labels=comma) + 
+  labs(
+    title="Goalkeepers are a Shoulder Above the Rest", 
+    subtitle = "675 goalies are at least six feet tall",
+    x="Height", 
+    y="Number of Goalies") + 
+  theme_classic() + 
+  coord_flip()
+```
+
+```{r}
+msoc_div1_def <- msoc_div1_updated |>
+  group_by(HeightCleaned) |>
+  filter(PositionCleaned == "Defense") |>
+  filter(HeightCleaned >= "'6-0'") |>
+  summarise(
+    total = n()
+  )
+
+ggplot() + 
+  geom_bar(
+    data=msoc_div1_def, 
+    aes(x=reorder(HeightCleaned, total),
+        weight=total)) + 
+  scale_y_continuous(labels=comma) + 
+  labs(
+    title="Defenders Rise to the Occasion", 
+    subtitle = "1,119 defenders soar to at least six feet tall",
+    x="Height", 
+    y="Number of Defenders") + 
+  theme_classic() + 
+  coord_flip()
+```
+
+For example, Maryland men's soccer's back four in 2024 were all European, with two Germans and one player from Norway and Denmark. Its goalie also hailed from Germany. The Terps' two center backs, Bjarne Thiesen and William Kulvik, stand at 6' 5" and 6' 1", respectively, while goalie Laurin Mack was recorded as 6' 1" tall.
+
+Reserve defenders Jace Clark, Brian St. Martin and Mack DeVries, who all made appearances for Maryland this campaign, are taller than six feet tall. Backup goalie Hudson Blatteis is 6' 4".
+
+
