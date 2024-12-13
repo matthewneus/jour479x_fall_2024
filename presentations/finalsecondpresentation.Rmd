@@ -27,6 +27,8 @@ England and Germany, the two countries that make up most of the European presenc
 
 Midfielders also frequently hail from England and Germany, alongside Spain. There are 164 midfielders at Division I programs across the three European countries.
 
+Albania, Estonia, Gibraltar, the Isle of Man, Kosovo, Monaco, and Romania are the seven countries or territories that represent just a single player on Division I rosters. All seven players are either forwards or midfielders.
+
 ```{r,  message = FALSE, warning = FALSE}
 msoc_div1_eupos <- msoc_div1_new |>
   group_by(PositionCleaned, country) |>
@@ -75,7 +77,7 @@ ggplot() +
   theme_classic()
 ```
 
-Across Division I soccer, most players are either 6' 0" or taller. There are 893 players that are exactly six feet tall, and 3,120 players that are six feet or taller. The highest Division I player, Jackson Nabors of Davidson, is a forward/midfielder standing at 6' 8".
+Across Division I soccer, most players are either 6' 0" or taller. There are 893 players that are exactly six feet tall, and 3,120 players that are six feet or taller. The tallest Division I player, Jackson Nabors of Davidson, is a forward/midfielder standing at 6' 8".
 
 ```{r,  message = FALSE, warning = FALSE}
 msoc_div1_new <- msoc_div1_new |>
@@ -131,6 +133,10 @@ ggplot() +
   coord_flip()
 ```
 
+For example, Maryland men's soccer's back four in 2024 were all European, with two Germans and one player from Norway and Denmark. Its goalie also hailed from Germany. The Terps' two center backs, Bjarne Thiesen and William Kulvik, stand at 6' 5" and 6' 1", respectively, while goalie Laurin Mack was recorded as 6' 1" tall.
+
+Reserve defenders Jace Clark, Brian St. Martin and Mack DeVries, who all made appearances for Maryland this campaign, are taller than six feet tall. Backup goalie Hudson Blatteis is 6' 4".
+
 ```{r}
 msoc_div1_def <- msoc_div1_updated |>
   group_by(HeightCleaned) |>
@@ -155,8 +161,19 @@ ggplot() +
   coord_flip()
 ```
 
-For example, Maryland men's soccer's back four in 2024 were all European, with two Germans and one player from Norway and Denmark. Its goalie also hailed from Germany. The Terps' two center backs, Bjarne Thiesen and William Kulvik, stand at 6' 5" and 6' 1", respectively, while goalie Laurin Mack was recorded as 6' 1" tall.
+College programs are beginning to tap into the international market when building its rosters. Countries from six of the seven continents are represented at the Division I level, with Antarctica the lone exclusion. When coaches go looking for players to build their teams, they often look at the same factors.
 
-Reserve defenders Jace Clark, Brian St. Martin and Mack DeVries, who all made appearances for Maryland this campaign, are taller than six feet tall. Backup goalie Hudson Blatteis is 6' 4".
+Players from Europe are most common, especially from countries with rich soccer history like England and Germany. Defenders are common to come from those countries. And when attempting to create a stout defense, height is a key factor. Players over six feet tall are more likely than not a defender of goalkeeper.
 
+Colleges tapping into the international market of players allows for a larger talent pool across Division I. Mid-major programs are growing in prestige, as Marshall, Vermont and Denver are national semifinalists in 2024. On those three teams, 35 players are from outside North America.
 
+```{r}
+msoc_div1_new |>
+  group_by(Continent) |>
+  filter(team == "Marshall" | team == "Denver" | team == "Vermont") |>
+  summarise(
+    total = n()
+  )
+```
+
+The change in foreign players joining college teams is making the talent in collegiate soccer better, which aids in growing the game of soccer in America. Dedicated pathways to professional leagues entices players to make the jump. With a heavy international influence, college soccer is changing for the better.
